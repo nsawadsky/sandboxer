@@ -17,8 +17,9 @@ public class SandboxAppLoader {
 	 * to be loaded.  Remaining arguments are passed to the loaded app.
 	 */
 	public static void main(String[] args) {
+		//printMessage("Testing JVM TI plugin");
 		SandboxAppLoader loader = new SandboxAppLoader();
-		loader.loadAppWithSandbox(args);	
+		loader.loadAppWithSandbox(args);
 	}
 
 	public void loadAppWithSandbox(String[] args) {
