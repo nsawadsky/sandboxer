@@ -70,11 +70,11 @@ public class SandboxTranslator implements Translator {
 		System.out.println("Translator: exiting public method: " + classAndMethod);
 	}
 	
-	public static void handleNew(Class newType, String classAndMethod) {
+	public static void handleNew(Class<?> newType, String classAndMethod) {
 		System.out.println("Translator: new " + newType.getSimpleName() + ": " + classAndMethod);
 	}
 	
-	public static void handleNewArray(Class arrType, String classAndMethod) {
+	public static void handleNewArray(Class<?> arrType, String classAndMethod) {
 		System.out.println("Translator: new " + arrType.getSimpleName() + "[]: " + classAndMethod);
 	}
 }
