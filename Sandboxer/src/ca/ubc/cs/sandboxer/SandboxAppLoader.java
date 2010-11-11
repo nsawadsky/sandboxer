@@ -8,6 +8,10 @@ import javassist.Loader;
  * with specified sandboxing policies enforced.
  */
 public class SandboxAppLoader {
+	static {
+		System.loadLibrary("SandboxerJVMTIPlugin");
+	}
+	
 	/**
 	 * First argument is the full name of the main class of the app 
 	 * to be loaded.  Remaining arguments are passed to the loaded app.
@@ -47,4 +51,9 @@ public class SandboxAppLoader {
 		SandboxPolicyManager.getInstance().registerPolicy(untrustedLoggerPolicy);
 		
 	}
+	
+	/**
+	 * Test function for JNI interface to JVM TI plugin.
+	 */
+	private native static void printMessage(String msg);
 }
