@@ -32,6 +32,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.1527844111" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base">
 								<option id="gnu.cpp.compiler.option.optimization.level.900560095" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.914417779" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.other.other.214982149" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -static-libgcc" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.include.paths.1759427884" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.6.0_21\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.6.0_21\include\win32&quot;"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1836765780" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.base.878099195" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.base">
@@ -678,6 +683,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.1376731646" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base">
 								<option id="gnu.cpp.compiler.option.optimization.level.309561006" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.1784509210" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.other.other.688161261" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -static-libgcc" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.include.paths.1586558253" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.6.0_21\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.6.0_21\include\win32&quot;"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.557078272" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.base.1149777123" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.base">

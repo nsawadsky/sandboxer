@@ -23,12 +23,12 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 }
 
 JNIEXPORT void JNICALL
-Java_ca_ubc_cs_sandboxer_SandboxAppLoader_printMessage(JNIEnv *env, jclass class, jstring javaMsg) {
-    const char* msg = (*env)->GetStringUTFChars(env, javaMsg, NULL);
+Java_ca_ubc_cs_sandboxer_SandboxAppLoader_printMessage(JNIEnv *env, jclass cls, jstring javaMsg) {
+    const char* msg = env->GetStringUTFChars(javaMsg, NULL);
     if (msg == NULL) {
         return;
     }
     printf("msg: %s, agent loaded: %d", msg, GBL_agentLoaded);
-    (*env)->ReleaseStringUTFChars(env, javaMsg, NULL);
+    env->ReleaseStringUTFChars(javaMsg, NULL);
 }
 
