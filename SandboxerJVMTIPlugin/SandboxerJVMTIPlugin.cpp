@@ -9,7 +9,7 @@
 #include <jvmti.h>
 #include <stdio.h>
 
-#include "ca_ubc_cs_sandboxer_SandboxAppLoader.h"
+#include "ca_ubc_cs_sandboxer_core_SandboxAppLoader.h"
 
 static int GBL_agentLoaded = 0;
 
