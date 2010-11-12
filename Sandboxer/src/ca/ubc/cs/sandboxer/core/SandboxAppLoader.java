@@ -1,4 +1,4 @@
-package ca.ubc.cs.sandboxer;
+package ca.ubc.cs.sandboxer.core;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +39,10 @@ public class SandboxAppLoader {
 			Loader loader = new Loader();
 	
 			loader.addTranslator(pool, translator);
+			
+			// Ensure all sandboxer classes are loaded by parent class loader 
+			// (i.e. not instrumented).
+			loader.delegateLoadingOf(SandboxAppLoader.class.getPackage().getName() + ".");
 			
 			loader.run(args);
 			

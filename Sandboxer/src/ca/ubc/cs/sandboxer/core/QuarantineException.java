@@ -1,4 +1,4 @@
-package ca.ubc.cs.sandboxer;
+package ca.ubc.cs.sandboxer.core;
 
 /**
  * Policy can be configured so that if a set of packages must be quarantined, then
