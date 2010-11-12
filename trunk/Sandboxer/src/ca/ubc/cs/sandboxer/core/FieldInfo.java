@@ -11,9 +11,13 @@ public class FieldInfo {
 	private String fieldName;
 	private Field field;
 	
-	public FieldInfo(String className, String fieldName) {
+	// Loader responsible for the class containing the field.
+	private ClassLoader loader;
+	
+	public FieldInfo(String className, String fieldName, ClassLoader loader) {
 		this.className = className;
 		this.fieldName = fieldName;
+		this.loader = loader;
 	}
 	
 	public String getClassName() {
@@ -33,12 +37,14 @@ public class FieldInfo {
 			synchronized (this) {
 				if (field == null) {
 					try {
-						Class<?> cls = Class.forName(className);
+						// For this to work, we are relying on the proper thread synchronization
+						// currently implemented in javassist.Loader.
+						Class<?> cls = Class.forName(className, true, loader);
 						field = cls.getDeclaredField(fieldName);
 					} catch (ClassNotFoundException e) {
-						// We ignore this exception and return null. 
-						// This could happen if getField() is called before loading
-						// of the class has completed.
+						// This will most likely represent a coding error of some kind.
+						throw new SandboxerException(
+								"Unable to load class " + className + ": " + e, e);
 					} catch (NoSuchFieldException e) {
 						// This will most likely represent a coding error of some kind.
 						throw new SandboxerException(

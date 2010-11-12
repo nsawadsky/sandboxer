@@ -11,19 +11,17 @@ import javassist.Loader;
  * with specified sandboxing policies enforced.
  */
 public class SandboxAppLoader {
-	/*
 	static {
 		// Load the associated JVM TI plugin.
 		System.loadLibrary("SandboxerJVMTIPlugin");
 	}
-	*/
 	
 	/**
 	 * First argument is the full name of the main class of the app 
 	 * to be loaded.  Remaining arguments are passed to the loaded app.
 	 */
 	public static void main(String[] args) {
-		//printMessage("Testing JVM TI plugin");
+		printMessage("Testing JVM TI plugin");
 		SandboxAppLoader loader = new SandboxAppLoader();
 		loader.loadAppWithSandbox(args);
 	}
@@ -34,12 +32,12 @@ public class SandboxAppLoader {
 			
 			RuntimeSandboxManager.getDefault().activate(policies);
 			
-			SandboxTranslator translator = new SandboxTranslator(policies);
+			Loader loader = new Loader();
+			
+			SandboxTranslator translator = new SandboxTranslator(policies, loader);
 			
 			ClassPool pool = ClassPool.getDefault();
 			
-			Loader loader = new Loader();
-	
 			loader.addTranslator(pool, translator);
 			
 			// Ensure all sandboxer classes are loaded by parent class loader 
