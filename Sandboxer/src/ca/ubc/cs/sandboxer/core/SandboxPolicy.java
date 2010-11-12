@@ -1,6 +1,5 @@
 package ca.ubc.cs.sandboxer.core;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
