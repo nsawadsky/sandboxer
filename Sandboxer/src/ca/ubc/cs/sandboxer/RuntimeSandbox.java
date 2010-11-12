@@ -2,8 +2,10 @@ package ca.ubc.cs.sandboxer;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A RuntimeSandbox is the runtime object associated with
@@ -13,7 +15,7 @@ public class RuntimeSandbox {
 	/**
 	 * The associated sandbox info.
 	 */
-	private LoadTimeSandboxInfo sandboxInfo;
+	private SandboxPolicy policy;
 	
 	/**
 	 * Is this sandbox quarantined?
@@ -74,19 +76,24 @@ public class RuntimeSandbox {
 	private Map<Thread, ActiveThreadInfo> activeThreads = new ConcurrentHashMap<Thread, ActiveThreadInfo>();
 
 	/**
+	 * List of the static fields belonging to classes in this sandbox.
+	 */
+	private List<FieldInfo> staticFields = new CopyOnWriteArrayList<FieldInfo>();
+	
+	/**
 	 * Create a runtime sandbox from the specified policy.
 	 */
-	public RuntimeSandbox(LoadTimeSandboxInfo info) {
-		this.sandboxInfo = info;
+	public RuntimeSandbox(SandboxPolicy policy) {
+		this.policy = policy;
 	}
 	
 	/**
 	 * Handler called when a thread enters a method of this sandbox.
 	 */
-	public void enterMethod() {
+	public void enterMethod(Class<?> cls, String methodName) {
 		if (isQuarantined) {
 			throw new QuarantineException(
-					"Sandbox " + sandboxInfo.getPolicy().getSandboxName() + " is quarantined, quarantine reason: " + quarantineReason);
+					"Sandbox " + policy.getSandboxName() + " is quarantined, quarantine reason: " + quarantineReason);
 		}
 		Thread currThread = Thread.currentThread();
 		ActiveThreadInfo info = activeThreads.get(currThread);
@@ -100,7 +107,7 @@ public class RuntimeSandbox {
 	/**
 	 * Handler called when a thread leaves a method of this sandbox.
 	 */
-	public void leaveMethod() {
+	public void leaveMethod(Class<?> cls, String methodName) {
 		Thread currThread = Thread.currentThread();
 		ActiveThreadInfo info = activeThreads.get(currThread);
 		if (info != null) {
@@ -111,10 +118,18 @@ public class RuntimeSandbox {
 	}
 	
 	/**
-	 * Get the load-time information on the sandbox.
+	 * Handler called when a new static field is discovered in a class being 
+	 * loaded in to the sandbox.
 	 */
-	public LoadTimeSandboxInfo getLoadTimeSandboxInfo() {
-		return sandboxInfo;
+	public void addStaticField(FieldInfo info) {
+		staticFields.add(info);
+	}
+	
+	/**
+	 * Get the sandbox policy.
+	 */
+	public SandboxPolicy getPolicy() {
+		return policy;
 	}
 	
 	/**
@@ -123,6 +138,14 @@ public class RuntimeSandbox {
 	 */
 	public Collection<ActiveThreadView> getActiveThreads() {
 		return (Collection)Collections.unmodifiableCollection(activeThreads.values());
+	}
+	
+	/**
+	 * Method for monitors to gather information on the static fields associated
+	 * with the sandbox.
+	 */
+	public List<FieldInfo> getStaticFields() {
+		return Collections.unmodifiableList(staticFields);
 	}
 	
 }

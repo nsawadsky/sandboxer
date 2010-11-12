@@ -1,57 +1,37 @@
 package ca.ubc.cs.sandboxer;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.Translator;
-import javassist.expr.NewExpr;
-import javassist.expr.ExprEditor;
-import javassist.expr.NewArray;
 
+/**
+ * This class uses Javassist to transform loaded classes that match sandbox policies.
+ */
 public class SandboxTranslator implements Translator {
+	private List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
 
-	@Override
+	public SandboxTranslator(List<SandboxPolicy> policies) {
+		this.policies = policies;
+	}
+	
+	/** 
+	 * Load a class, instrumenting it if necessary.
+	 */
 	public void onLoad(ClassPool pool, String className) throws NotFoundException,
 			CannotCompileException {
-		final String UNTRUSTED_PKG = "ca.ubc.cs.sandbox.test.logger.";
-		if (className.startsWith(UNTRUSTED_PKG)) {
+		List<SandboxPolicy> matchingPolicies = getMatchingPolicies(className);
+		if (!matchingPolicies.isEmpty()) {
 			CtClass ctc = pool.get(className);
-			CtMethod[] methods = ctc.getMethods();
-			for (CtMethod method: methods) {
-				if (method.getDeclaringClass().getName().startsWith(UNTRUSTED_PKG) && 
-						Modifier.isPublic(method.getModifiers()) && 
-						method.getMethodInfo().getCodeAttribute() != null) {
-					int lastDot = className.lastIndexOf(".");
-					String shortClassName = className.substring(lastDot+1);
-					final String classAndMethod = shortClassName + "." + method.getName();
-
-					method.instrument( new ExprEditor() { 
-						public void edit(NewExpr expr) {
-							try {
-								expr.replace("{ ca.ubc.cs.sandbox.SandboxTranslator.handleNew( $type, \"" + classAndMethod + "\"); $_ = $proceed($$); }");
-							} catch (Exception e) {
-								System.out.println("ExprEditor.edit(NewExpr) caught exception: " + e);
-							}
-						}
-						
-						public void edit(NewArray expr) {
-							try {
-								expr.replace("{ ca.ubc.cs.sandbox.SandboxTranslator.handleNewArray( $type, \"" + classAndMethod + "\"); $_ = $proceed($$); }");
-							} catch (Exception e) {
-								System.out.println("ExprEditor.edit(NewArray) caught exception: " + e);
-							}
-						}
-					
-					});
-					
-					method.insertBefore("{ ca.ubc.cs.sandbox.SandboxTranslator.handleEnterPublicMethod(\"" + classAndMethod + "\"); }");
-					method.insertAfter("{ ca.ubc.cs.sandbox.SandboxTranslator.handleExitPublicMethod(\"" + classAndMethod + "\"); }");
-				}
-			}
+			processFields(className, ctc.getFields(), matchingPolicies);
+			processMethods(className, ctc.getMethods(), matchingPolicies);
 		}
 		
 	}
@@ -62,19 +42,61 @@ public class SandboxTranslator implements Translator {
 		
 	}
 	
-	public static void handleEnterPublicMethod(String classAndMethod) {
-		System.out.println("Translator: entering public method: " + classAndMethod);
+	private void processMethods(String className, CtMethod[] methods, List<SandboxPolicy> policies) 
+				throws CannotCompileException {
+		for (CtMethod method: methods) {
+			// Do not include inherited methods.  If they are inherited from a base class
+			// in a sandbox, we should get a separate onLoad for that class.
+			// TODO: confirm this assumption.
+			if (method.getDeclaringClass().getName().equals(className) &&
+					// Include protected and public methods.
+					(Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) &&
+					// Make sure we *can* instrument the method (e.g. method is not native).
+					method.getMethodInfo().getCodeAttribute() != null) {
+
+				for (SandboxPolicy policy: policies) {
+					instrumentMethodForSandbox(method, policy);
+				}
+			}
+		}
+		
 	}
 	
-	public static void handleExitPublicMethod(String classAndMethod) {
-		System.out.println("Translator: exiting public method: " + classAndMethod);
+	private void instrumentMethodForSandbox(CtMethod method, SandboxPolicy policy) throws CannotCompileException {
+		final String SANDBOX_MANAGER = RuntimeSandboxManager.class.getName();
+		String beforeCode = 
+			"{" +
+			    SANDBOX_MANAGER + ".getDefault().enterMethod(" + policy.getId() + ", $class, \"" + method.getName() + "\");" + 
+			"}";
+		String afterCode = 
+			"{" +
+		    	SANDBOX_MANAGER + ".getDefault().leaveMethod(" + policy.getId() + ", $class, \"" + method.getName() + "\");" + 
+			"}";
+		method.insertBefore(beforeCode);
+		method.insertAfter(afterCode);
 	}
 	
-	public static void handleNew(Class<?> newType, String classAndMethod) {
-		System.out.println("Translator: new " + newType.getSimpleName() + ": " + classAndMethod);
+	private void processFields(String className, CtField[] fields, List<SandboxPolicy> policies) {
+		for (CtField field: fields) {
+			// Add static fields declared within this class (not in a base class) to the 
+			// matching sandboxes.
+			if (field.getDeclaringClass().getName().equals(className) &&
+					Modifier.isStatic(field.getModifiers())) {
+				for (SandboxPolicy policy: policies) {
+					RuntimeSandboxManager.getDefault().addStaticField(policy.getId(), 
+							new FieldInfo(className, field.getName()));
+				}
+			}
+		}
 	}
 	
-	public static void handleNewArray(Class<?> arrType, String classAndMethod) {
-		System.out.println("Translator: new " + arrType.getSimpleName() + "[]: " + classAndMethod);
+	private List<SandboxPolicy> getMatchingPolicies(String className) {
+		List<SandboxPolicy> results = new ArrayList<SandboxPolicy>();
+		for (SandboxPolicy policy: policies) {
+			if (policy.doesClassMatchPolicy(className)) {
+				results.add(policy);
+			}
+		}
+		return results;
 	}
 }

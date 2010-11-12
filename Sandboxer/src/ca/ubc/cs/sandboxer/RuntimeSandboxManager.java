@@ -1,6 +1,5 @@
 package ca.ubc.cs.sandboxer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,8 +13,6 @@ public class RuntimeSandboxManager {
 	private Map<Integer, RuntimeSandbox> sandboxes = 
 		new ConcurrentHashMap<Integer, RuntimeSandbox>();
 	
-	private List<LoadTimeSandboxInfo> sandboxInfos = new ArrayList<LoadTimeSandboxInfo>();
-	
 	private static RuntimeSandboxManager defaultInstance = new RuntimeSandboxManager();
 	
 	public static RuntimeSandboxManager getDefault() {
@@ -23,43 +20,47 @@ public class RuntimeSandboxManager {
 	}
 
 	/**
-	 * Adds info on a loaded sandbox to the manager.  This method cannot
-	 * be called after the manager is activated.
-	 */
-	public void addLoadTimeSandboxInfo(LoadTimeSandboxInfo info) {
-		if (isActivated) {
-			throw new SandboxerException("Cannot add a sandbox after manager has been activated");
-		}
-		sandboxInfos.add(info);
-	}
-
-	/**
 	 * Activate the manager, creating runtime sandbox objects.
 	 */
-	public void activate() {
+	public void activate(List<SandboxPolicy> policies) {
+		if (isActivated) { 
+			throw new SandboxerException("RuntimeSandboxManager already activated");
+		}
 		isActivated = true;
-		for (LoadTimeSandboxInfo info: sandboxInfos) {
-			sandboxes.put(info.getPolicy().getId(), new RuntimeSandbox(info));
+		for (SandboxPolicy policy: policies) {
+			sandboxes.put(policy.getId(), new RuntimeSandbox(policy));
 		}
 	}
 	
 	/**
 	 * Event handler invoked when a sandboxed method is entered.
 	 */
-	public void enterMethod(int sandboxId) {
+	// TODO: add additional arguments
+	public void enterMethod(int sandboxId, Class<?> cls, String methodName) {
 		RuntimeSandbox sandbox = sandboxes.get(sandboxId);
 		if (sandbox != null) {
-			sandbox.enterMethod();
+			sandbox.enterMethod(cls, methodName);
 		}
 	}
 	
 	/**
 	 * Event handler invoked when a sandboxed method is exited.
 	 */
-	public void leaveMethod(int sandboxId) {
+	public void leaveMethod(int sandboxId, Class<?> cls, String methodName) {
 		RuntimeSandbox sandbox = sandboxes.get(sandboxId);
 		if (sandbox != null) {
-			sandbox.leaveMethod();
+			sandbox.leaveMethod(cls, methodName);
+		}
+	}
+	
+	/**
+	 * Event handler invoked when a new static field is discovered in a class being
+	 * loaded into the sandbox.
+	 */
+	public void addStaticField(int sandboxId, FieldInfo fieldInfo) {
+		RuntimeSandbox sandbox = sandboxes.get(sandboxId);
+		if (sandbox != null) {
+			sandbox.addStaticField(fieldInfo);
 		}
 	}
 	

@@ -30,7 +30,9 @@ public class SandboxAppLoader {
 		try {
 			List<SandboxPolicy> policies = getPolicies();
 			
-			SandboxTranslator translator = new SandboxTranslator();
+			RuntimeSandboxManager.getDefault().activate(policies);
+			
+			SandboxTranslator translator = new SandboxTranslator(policies);
 			
 			ClassPool pool = ClassPool.getDefault();
 			

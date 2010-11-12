@@ -1,5 +1,6 @@
 package ca.ubc.cs.sandboxer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,6 +69,19 @@ public class SandboxPolicy {
 		this.maxHeapMegabytes = maxHeapMegabytes;
 		this.quarantineBehavior = behavior;
 		
+	}
+	
+	/**
+	 * Check if the given class matches one of the package prefixes configured
+	 * for this policy.
+	 */
+	public boolean doesClassMatchPolicy(String className) {
+		for (String packagePrefix: packagePrefixes) {
+			if (className.startsWith(packagePrefix)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public String getSandboxName() {
