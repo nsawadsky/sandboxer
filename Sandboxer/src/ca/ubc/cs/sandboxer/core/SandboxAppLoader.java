@@ -11,10 +11,12 @@ import javassist.Loader;
  * with specified sandboxing policies enforced.
  */
 public class SandboxAppLoader {
+	/*
 	static {
 		// Load the associated JVM TI plugin.
 		System.loadLibrary("SandboxerJVMTIPlugin");
 	}
+	*/
 	
 	/**
 	 * First argument is the full name of the main class of the app 
@@ -59,7 +61,7 @@ public class SandboxAppLoader {
 		SandboxPolicy untrustedLoggerPolicy = new SandboxPolicy(
 				"UntrustedLoggerSandbox",
 				Arrays.asList("ca.ubc.cs.sandboxer.test.logger."),
-				0.90, 5, 10, SandboxPolicy.QuarantineBehavior.Exception);
+			    3000, 100, SandboxPolicy.QuarantineBehavior.Exception);
 		return Arrays.asList(untrustedLoggerPolicy);	
 	}
 	

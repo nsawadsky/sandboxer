@@ -16,8 +16,7 @@ public class SandboxPolicy {
 	private int id;
 	private String sandboxName;
 	private List<String> packagePrefixes;
-	private double maxCpuUsageRatio;
-	private int cpuUsageWindowSeconds;
+	private int callTimeoutMsecs;
 	private int maxHeapMegabytes;
 	private QuarantineBehavior quarantineBehavior;
 
@@ -45,26 +44,18 @@ public class SandboxPolicy {
 	 * @param packagePrefixes The list of Java package name prefixes that are managed by the policy.
 	 *        Packages whose names begin with the specified prefixes will be managed 
 	 *        according to this policy.
-	 * @param maxCpuUsageRatio The maximum average CPU usage for a thread executing
-	 *        in one of the specified packages.  This returns fractional CPU usage,
-	 *        i.e. a value between 0 and 1 representing the fraction of available
-	 *        processor time (on a single CPU) that is used by a thread.
-	 * @param cpuUsageWindowSeconds The window over which CPU usage is averaged.  If 
-	 *        average CPU usage exceeds maxCpuUsageRatio for this number of 
-	 *        seconds, the set of packages is quarantined. 
+	 * @param callTimeoutMsecs Timeout in milliseconds for all calls in to the sandbox.
 	 * @param maxHeapMegabytes The maximum amount of heap that may be used by all 
 	 *        packages associated with the policy.
 	 * @param quarantineBehavior The behavior to be enforced once a set of packages
 	 *        has been quarantined.
 	 */
 	public SandboxPolicy(String sandboxName, List<String> packagePrefixes, 
-			double maxCpuUsageRatio, int cpuUsageWindowSeconds,
-			int maxHeapMegabytes, QuarantineBehavior behavior) {
+			int callTimeoutMsecs, int maxHeapMegabytes, QuarantineBehavior behavior) {
 		this.id = getNextPolicyId();
 		this.sandboxName = sandboxName;
 		this.packagePrefixes = packagePrefixes;
-		this.maxCpuUsageRatio = maxCpuUsageRatio;
-		this.cpuUsageWindowSeconds = cpuUsageWindowSeconds;
+		this.callTimeoutMsecs = callTimeoutMsecs;
 		this.maxHeapMegabytes = maxHeapMegabytes;
 		this.quarantineBehavior = behavior;
 		
@@ -95,12 +86,8 @@ public class SandboxPolicy {
 		return Collections.unmodifiableList(packagePrefixes);
 	}
 	
-	public double getMaxCpuUsageRatio() {
-		return maxCpuUsageRatio;
-	}
-	
-	public int getCpuUsageWindowSeconds() {
-		return cpuUsageWindowSeconds;
+	public int getCallTimeoutMsecs() {
+		return callTimeoutMsecs;
 	}
 	
 	public int getMaxHeapMegabytes() {
@@ -109,6 +96,10 @@ public class SandboxPolicy {
 	
 	public QuarantineBehavior getQuarantineBehavior() {
 		return quarantineBehavior;
+	}
+	
+	public SandboxMonitor getMonitor(RuntimeSandbox sandbox) {
+		return new SandboxMonitor(this, sandbox);
 	}
 	
 	private synchronized static int getNextPolicyId() {

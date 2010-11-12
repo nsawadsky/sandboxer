@@ -30,8 +30,8 @@ public class SandboxTranslator implements Translator {
 		List<SandboxPolicy> matchingPolicies = getMatchingPolicies(className);
 		if (!matchingPolicies.isEmpty()) {
 			CtClass ctc = pool.get(className);
-			processFields(className, ctc.getFields(), matchingPolicies);
-			processMethods(className, ctc.getMethods(), matchingPolicies);
+			processFields(className, ctc.getDeclaredFields(), matchingPolicies);
+			processMethods(className, ctc.getDeclaredMethods(), matchingPolicies);
 		}
 		
 	}
@@ -45,12 +45,8 @@ public class SandboxTranslator implements Translator {
 	private void processMethods(String className, CtMethod[] methods, List<SandboxPolicy> policies) 
 				throws CannotCompileException {
 		for (CtMethod method: methods) {
-			// Do not include inherited methods.  If they are inherited from a base class
-			// in a sandbox, we should get a separate onLoad for that class.
-			// TODO: confirm this assumption.
-			if (method.getDeclaringClass().getName().equals(className) &&
-					// Include protected and public methods.
-					(Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) &&
+			// Include protected and public methods.
+			if ((Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) &&
 					// Make sure we *can* instrument the method (e.g. method is not native).
 					method.getMethodInfo().getCodeAttribute() != null) {
 
@@ -73,15 +69,13 @@ public class SandboxTranslator implements Translator {
 		    	SANDBOX_MANAGER + ".getDefault().leaveMethod(" + policy.getId() + ", $class, \"" + method.getName() + "\");" + 
 			"}";
 		method.insertBefore(beforeCode);
-		method.insertAfter(afterCode);
+		method.insertAfter(afterCode, true);
 	}
 	
 	private void processFields(String className, CtField[] fields, List<SandboxPolicy> policies) {
 		for (CtField field: fields) {
-			// Add static fields declared within this class (not in a base class) to the 
-			// matching sandboxes.
-			if (field.getDeclaringClass().getName().equals(className) &&
-					Modifier.isStatic(field.getModifiers())) {
+			// Add static fields declared within this class to the matching sandboxes.
+			if (Modifier.isStatic(field.getModifiers())) {
 				for (SandboxPolicy policy: policies) {
 					RuntimeSandboxManager.getDefault().addStaticField(policy.getId(), 
 							new FieldInfo(className, field.getName()));
