@@ -5,9 +5,9 @@ package ca.ubc.cs.sandboxer.core;
  * all subsequent calls to the packages throw QuarantineException.
  */
 public class QuarantineException extends RuntimeException {
-	private static final long serialVersionUID = 1;
-	
-	public QuarantineException(String message) {
-		super(message);
-	}
+    private static final long serialVersionUID = 1;
+    
+    public QuarantineException(String message) {
+        super(message);
+    }
 }
