@@ -23,7 +23,7 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 }
 
 JNIEXPORT void JNICALL
-Java_ca_ubc_cs_sandboxer_SandboxAppLoader_printMessage(JNIEnv *env, jclass cls, jstring javaMsg) {
+Java_ca_ubc_cs_sandboxer_core_SandboxAppLoader_printMessage(JNIEnv *env, jclass cls, jstring javaMsg) {
     const char* msg = env->GetStringUTFChars(javaMsg, NULL);
     if (msg == NULL) {
         return;
