@@ -1,5 +1,6 @@
 package ca.ubc.cs.sandboxer.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,7 @@ public class RuntimeSandboxManager {
 	}
 
 	/**
-	 * Activate the manager, creating runtime sandbox objects.
+	 * Activate the manager, creating runtime sandbox objects and associated monitors.
 	 */
 	public void activate(List<SandboxPolicy> policies) {
 		if (isActivated) { 
@@ -28,14 +29,16 @@ public class RuntimeSandboxManager {
 		}
 		isActivated = true;
 		for (SandboxPolicy policy: policies) {
-			sandboxes.put(policy.getId(), new RuntimeSandbox(policy));
+			RuntimeSandbox sandbox = new RuntimeSandbox(policy);
+			sandboxes.put(policy.getId(), sandbox);
+			SandboxMonitor monitor = policy.getMonitor(sandbox);
+			monitor.start();
 		}
 	}
 	
 	/**
 	 * Event handler invoked when a sandboxed method is entered.
 	 */
-	// TODO: add additional arguments
 	public void enterMethod(int sandboxId, Class<?> cls, String methodName) {
 		RuntimeSandbox sandbox = sandboxes.get(sandboxId);
 		if (sandbox != null) {

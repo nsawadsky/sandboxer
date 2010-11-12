@@ -34,7 +34,22 @@ public class RuntimeSandbox {
 		/**
 		 * Get the time when the thread entered the sandbox.
 		 */
-		long getEntryTimeMillis();
+		long getEntryTimeMsecs();
+		
+		/** 
+		 * Get the associated thread.
+		 */
+		Thread getActiveThread();
+		
+		/**
+		 * Get the class where the thread entered the sandbox.
+		 */
+		Class<?> getEntryClass();
+		
+		/**
+		 * Get the method where the thread entered the sandbox.
+		 */
+		String getEntryMethodName();
 	}
 	
 	/**
@@ -46,10 +61,16 @@ public class RuntimeSandbox {
 		private Thread activeThread;
 		
 		private int entryCount;
+		
+		private Class<?> entryClass;
+		
+		private String entryMethodName;
 
-		ActiveThreadInfo(Thread thread) {
+		ActiveThreadInfo(Thread thread, Class<?> cls, String methodName) {
 			entryTimeMillis = System.currentTimeMillis();
 			activeThread = thread;
+			entryClass = cls;
+			entryMethodName = methodName;
 			entryCount = 1;
 		}
 		
@@ -57,8 +78,16 @@ public class RuntimeSandbox {
 			return activeThread;
 		}
 
-		public long getEntryTimeMillis() {
+		public long getEntryTimeMsecs() {
 			return entryTimeMillis;
+		}
+		
+		public Class<?> getEntryClass() {
+			return entryClass;
+		}
+		
+		public String getEntryMethodName() {
+			return entryMethodName;
 		}
 		
 		public int incrementEntryCount() {
@@ -87,11 +116,18 @@ public class RuntimeSandbox {
 		this.policy = policy;
 	}
 	
+	public void setQuarantined(String reason) {
+		if (!isQuarantined) {
+			isQuarantined = true;
+			quarantineReason = reason;
+		}
+	}
+	
 	/**
 	 * Handler called when a thread enters a method of this sandbox.
 	 */
 	public void enterMethod(Class<?> cls, String methodName) {
-		System.out.println("Entering method: " + methodName);
+		System.out.println("Entering " + cls.getSimpleName() + "." + methodName);
 		if (isQuarantined) {
 			throw new QuarantineException(
 					"Sandbox " + policy.getSandboxName() + " is quarantined, quarantine reason: " + quarantineReason);
@@ -99,7 +135,7 @@ public class RuntimeSandbox {
 		Thread currThread = Thread.currentThread();
 		ActiveThreadInfo info = activeThreads.get(currThread);
 		if (info == null) {
-			activeThreads.put(currThread, new ActiveThreadInfo(currThread));
+			activeThreads.put(currThread, new ActiveThreadInfo(currThread, cls, methodName));
 		} else {
 			info.incrementEntryCount();
 		}
@@ -109,7 +145,7 @@ public class RuntimeSandbox {
 	 * Handler called when a thread leaves a method of this sandbox.
 	 */
 	public void leaveMethod(Class<?> cls, String methodName) {
-		System.out.println("Leaving method: " + methodName);
+		System.out.println("Leaving " + cls.getSimpleName() + "." + methodName);
 		Thread currThread = Thread.currentThread();
 		ActiveThreadInfo info = activeThreads.get(currThread);
 		if (info != null) {
@@ -124,6 +160,7 @@ public class RuntimeSandbox {
 	 * loaded in to the sandbox.
 	 */
 	public void addStaticField(FieldInfo info) {
+		System.out.println("Adding static field " + info.getClassName() + "." + info.getFieldName());
 		staticFields.add(info);
 	}
 	
