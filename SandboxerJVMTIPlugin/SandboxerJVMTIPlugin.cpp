@@ -28,7 +28,8 @@ Java_ca_ubc_cs_sandboxer_core_SandboxAppLoader_printMessage(JNIEnv *env, jclass 
     if (msg == NULL) {
         return;
     }
-    printf("msg: %s, agent loaded: %d", msg, GBL_agentLoaded);
+    printf("msg: %s, agent loaded: %d\n", msg, GBL_agentLoaded);
+    fflush(stdout);
     env->ReleaseStringUTFChars(javaMsg, NULL);
 }
 
