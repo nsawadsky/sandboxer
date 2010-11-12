@@ -1,5 +1,8 @@
 package ca.ubc.cs.sandboxer;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javassist.ClassPool;
 import javassist.Loader;
 
@@ -9,6 +12,7 @@ import javassist.Loader;
  */
 public class SandboxAppLoader {
 	static {
+		// Load the associated JVM TI plugin.
 		System.loadLibrary("SandboxerJVMTIPlugin");
 	}
 	
@@ -24,7 +28,7 @@ public class SandboxAppLoader {
 
 	public void loadAppWithSandbox(String[] args) {
 		try {
-			registerPolicies();
+			List<SandboxPolicy> policies = getPolicies();
 			
 			SandboxTranslator translator = new SandboxTranslator();
 			
@@ -42,15 +46,15 @@ public class SandboxAppLoader {
 	}
 	
 	/**
-	 * Installs hard-coded sandboxing policies.  Eventually, policies should
-	 * be config-driven.
+	 * Retrieves hard-coded sandboxing policies.  Eventually, policies should
+	 * be config-driven.  
 	 */
-	private void registerPolicies() {
+	private List<SandboxPolicy> getPolicies() {
 		SandboxPolicy untrustedLoggerPolicy = new SandboxPolicy(
-				new String[] { "ca.ubc.cs.sandboxer.test.logger." },
+				"UntrustedLoggerSandbox",
+				Arrays.asList("ca.ubc.cs.sandboxer.test.logger."),
 				0.90, 5, 10, SandboxPolicy.QuarantineBehavior.Exception);
-		SandboxPolicyManager.getInstance().registerPolicy(untrustedLoggerPolicy);
-		
+		return Arrays.asList(untrustedLoggerPolicy);	
 	}
 	
 	/**
