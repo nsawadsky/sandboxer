@@ -41,7 +41,7 @@ public class SandboxAppLoader {
 			loader.addTranslator(pool, translator);
 			
 			// Ensure all sandboxer classes are loaded by parent class loader 
-			// (i.e. not instrumented).
+			// (i.e. so they are not instrumented).
 			loader.delegateLoadingOf(SandboxAppLoader.class.getPackage().getName() + ".");
 			
 			loader.run(args);
