@@ -17,9 +17,11 @@ import javassist.Translator;
  */
 public class SandboxTranslator implements Translator {
 	private List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
+	private ClassLoader loader;
 
-	public SandboxTranslator(List<SandboxPolicy> policies) {
+	public SandboxTranslator(List<SandboxPolicy> policies, ClassLoader loader) {
 		this.policies = policies;
+		this.loader = loader;
 	}
 	
 	/** 
@@ -78,7 +80,7 @@ public class SandboxTranslator implements Translator {
 			if (Modifier.isStatic(field.getModifiers())) {
 				for (SandboxPolicy policy: policies) {
 					RuntimeSandboxManager.getDefault().addStaticField(policy.getId(), 
-							new FieldInfo(className, field.getName()));
+							new FieldInfo(className, field.getName(), loader));
 				}
 			}
 		}
