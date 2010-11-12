@@ -1,4 +1,4 @@
-package ca.ubc.cs.sandboxer;
+package ca.ubc.cs.sandboxer.core;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -91,6 +91,7 @@ public class RuntimeSandbox {
 	 * Handler called when a thread enters a method of this sandbox.
 	 */
 	public void enterMethod(Class<?> cls, String methodName) {
+		System.out.println("Entering method: " + methodName);
 		if (isQuarantined) {
 			throw new QuarantineException(
 					"Sandbox " + policy.getSandboxName() + " is quarantined, quarantine reason: " + quarantineReason);
@@ -108,6 +109,7 @@ public class RuntimeSandbox {
 	 * Handler called when a thread leaves a method of this sandbox.
 	 */
 	public void leaveMethod(Class<?> cls, String methodName) {
+		System.out.println("Leaving method: " + methodName);
 		Thread currThread = Thread.currentThread();
 		ActiveThreadInfo info = activeThreads.get(currThread);
 		if (info != null) {

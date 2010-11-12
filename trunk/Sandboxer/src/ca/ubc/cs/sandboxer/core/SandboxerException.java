@@ -1,4 +1,4 @@
-package ca.ubc.cs.sandboxer;
+package ca.ubc.cs.sandboxer.core;
 
 /**
  * General purpose exception class.

@@ -1,4 +1,4 @@
-package ca.ubc.cs.sandboxer;
+package ca.ubc.cs.sandboxer.core;
 
 import java.util.List;
 import java.util.Map;

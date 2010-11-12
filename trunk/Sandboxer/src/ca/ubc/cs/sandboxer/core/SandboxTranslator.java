@@ -1,4 +1,4 @@
-package ca.ubc.cs.sandboxer;
+package ca.ubc.cs.sandboxer.core;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

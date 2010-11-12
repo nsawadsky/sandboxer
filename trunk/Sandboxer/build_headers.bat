@@ -1,1 +1,1 @@
-javah -d ..\SandboxerJVMTIPlugin -classpath bin -jni ca.ubc.cs.sandboxer.SandboxAppLoader
+javah -d ..\SandboxerJVMTIPlugin -classpath bin -jni ca.ubc.cs.sandboxer.core.SandboxAppLoader
