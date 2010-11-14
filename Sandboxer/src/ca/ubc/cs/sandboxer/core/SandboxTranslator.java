@@ -16,7 +16,7 @@ import javassist.Translator;
  * This class uses Javassist to transform loaded classes that match sandbox policies.
  */
 public class SandboxTranslator implements Translator {
-    private List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
+    private List<SandboxPolicy> policies;
     private ClassLoader loader;
 
     public SandboxTranslator(List<SandboxPolicy> policies, ClassLoader loader) {

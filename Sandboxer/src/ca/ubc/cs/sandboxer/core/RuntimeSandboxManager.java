@@ -1,8 +1,8 @@
 package ca.ubc.cs.sandboxer.core;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages sandboxes at runtime.
@@ -10,8 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RuntimeSandboxManager {
     private boolean isActivated = false;
     
-    private Map<Integer, RuntimeSandbox> sandboxes = 
-        new ConcurrentHashMap<Integer, RuntimeSandbox>();
+    private Map<Integer, RuntimeSandbox> sandboxes = new HashMap<Integer, RuntimeSandbox>();
     
     private static RuntimeSandboxManager defaultInstance = new RuntimeSandboxManager();
     
