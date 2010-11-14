@@ -5,7 +5,7 @@ This page contains required action-items: decisions and implementation tasks
 
 = Decisions =
 
- # Decide how the application is run:
+ # Decide how the application under test (AUT) is run:
    * Either using SandboxLoader which is a separate Java application _or_
    * As a normal application with a command line argument of using the agent which in turns triggers sandboxing
 
