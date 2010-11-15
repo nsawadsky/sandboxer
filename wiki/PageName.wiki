@@ -8,6 +8,11 @@ This page contains required action-items: decisions and implementation tasks
  # Decide how the application under test (AUT) is run:
    * Either using SandboxLoader which is a separate Java application _or_
    * As a normal application with a command line argument of using the agent which in turns triggers sandboxing
+ # Define heap usage of package, so that we can enforce user-defined limit in a reasonably intuitive way.
+   * Consider case where package holds reference to large object passed by client.
+   * Candidate definition: All memory reachable from:
+      * Static references within classes defined by the package.
+      * Stack-local variable references belonging to threads that are created by the package.
 
 = Implementation Tasks =
- #
+ # 
