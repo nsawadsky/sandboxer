@@ -1,4 +1,4 @@
-#TODO list
+=TODO list=
 
 This page contains required action-items: decisions and implementation tasks
 
@@ -19,4 +19,5 @@ This page contains required action-items: decisions and implementation tasks
 
 
 = Implementation Tasks =
- # 
+ # (Mike) Implement a JNI call that takes in a list of Java object references and calculates the total heap memory used by all objects reachable from that list.  This function needs to consider the possibility that the trees reachable from each object in the list may overlap each other, i.e. they may be non-disjoint.
+ # (Nick) Implement code in the Java layer to either (a) track all objects allocated within the package or (b) track all objects returned from the package to client code.  For either approach, we must also track when these objects are freed by the garbage collector.
