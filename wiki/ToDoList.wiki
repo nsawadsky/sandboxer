@@ -13,11 +13,9 @@ This page contains required action-items: decisions and implementation tasks
    * Candidate definition: All memory reachable from:
       * Static references within classes defined by the package.
       * Instances of classes within the package that are returned to the client.
-         * What about the case where the package returns an instance of a class *not* defined in the package (say a hash table), but this instance contains references to instances of package-defined classes.  
-         * Perhaps we need to track all allocated instances of package classes.
       * Object references stored on the stack of a thread created by the package.
-
+   * How do we track all these references?  Simplest way might be to track all allocations within the package.  To track memory usage, need to know which of the allocated objects have not yet been freed, and then determine all heap memory reachable from these objects.
 
 = Implementation Tasks =
  # (Mike) Implement a JNI call that takes in a list of Java object references and calculates the total heap memory used by all objects reachable from that list.  This function needs to consider the possibility that the trees reachable from each object in the list may overlap each other, i.e. they may be non-disjoint.
- # (Nick) Implement code in the Java layer to either (a) track all objects allocated within the package or (b) track all objects returned from the package to client code.  For either approach, we must also track when these objects are freed by the garbage collector.
+ # (Nick) Implement code in the Java layer to track all objects allocated within the package.
