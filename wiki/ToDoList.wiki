@@ -17,7 +17,7 @@ This page contains required action-items: decisions and implementation tasks
       * By instrumenting constructors, track all new instances of classes within the package.  This set of objects is group B.
       * To constrain project scope, ignore the third case (stack references).
    * How do we track when objects are freed?  
-      * Create PhantomReference objects for all items in group B.  When these objects are ready to be garbage collected, their PhantomReferences will be added to a queue we provide.
+      * Create WeakReference objects for all items in group B.  At some point after these objects are garbage collected, their weak references will be added to a queue we provide.
 
 = Implementation Tasks =
  # (Mike) Implement a JNI call that takes in a list of Java object references and calculates the total heap memory used by all objects reachable from that list.  This function needs to consider the possibility that the trees reachable from each object in the list may overlap each other, i.e. they may be non-disjoint.
