@@ -27,8 +27,6 @@ public class Logger extends BaseLogger {
     }
     
     protected void internalLongRunningCall() {
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {}
+        do {} while (true);
     }
 }
