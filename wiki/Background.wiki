@@ -1,0 +1,13 @@
+# problem breakdown
+
+= Terminology =
+ * Application - 
+ * Library (Untrusted library) - 
+ * Trusted library -
+ * Sandboxer - 
+ * Sandboxer Plugin -  
+ * Application context -
+ * Library private context - 
+
+= Memory Access Model =
+ * 
