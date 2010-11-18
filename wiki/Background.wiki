@@ -9,5 +9,20 @@
  * Application context -
  * Library private context - 
 
-= Memory Access Model =
- * 
+= Memory Access =
+
+== Requirement ==
+A key requirement is putting leaking libraries into quarantine. The challenge is how to tell when library is leaking memory.
+
+== Memory Model ==
+Here we deal with object referenced by the library. First a list of possible allocation/access models:
+ # Static library objects - objects allocated by library code, referenced by library internally not exposed to other parties.
+ # Member arguments - arguments passed by the caller (application) to a library member function (callee).
+   # "const" objects - which are used by the member function but not modified or stored in the class
+   # Modified objects - objects which are modified (i.e. hash-maps get new values)
+   # Stored references - Object references are copied for library future use.
+ # Library stack objects - objects allocated by the library during a method call. These can be subdivided into:
+   # Temporary objects - disposed once member function returns
+   # Returned Objects - are returned to caller
+   # Stored Objects - stored internally by the library, not exposed to caller
+ # Library context objects - object created on a private library context (thread)
