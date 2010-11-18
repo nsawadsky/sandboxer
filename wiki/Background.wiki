@@ -16,10 +16,10 @@ A key requirement is putting leaking libraries into quarantine. The challenge is
 The issue now is how to define library memory consumption: the library may hold references to memory that it did not allocate, or conversely allocate memory then return it to the caller and get rid of the reference. Which is considered as library memory?
 
 == Memory Model ==
-Here we deal with objects referenced by the library. First a list of possible allocation/access models:
- # Static library objects - objects allocated by library code, referenced by library internally not exposed to other parties.
+Here we deal with objects referenced by the library. First a list of possible allocation/access models (+ leak, - no leak, ? not sure):
+ # Static library objects - objects allocated by library code, referenced by library internally not exposed to other parties. 
  # Member arguments - arguments passed by the caller (application) to a library member function (callee).
-   # "const" objects - which are used by the member function but not modified or stored in the class
+   # "const" objects - which are used by the member function but not modified or stored in the class. 
    # Modified objects - objects which are modified (i.e. hash-maps get new values)
    # Stored references - Object references are copied for library future use.
  # Library stack objects - objects allocated by the library during a method call. These can be subdivided into:
@@ -27,3 +27,5 @@ Here we deal with objects referenced by the library. First a list of possible al
    # Returned Objects - are returned to caller
    # Stored Objects - stored internally by the library, not exposed to caller
  # Library context objects - object created on a private library context (thread)
+
+Any allocation of a class defined in the library should be considered as part of the library memory.
