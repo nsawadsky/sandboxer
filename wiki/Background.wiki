@@ -12,7 +12,8 @@
 = Memory Access =
 
 == Requirement ==
-A key requirement is putting leaking libraries into quarantine. The challenge is telling when library is leaking memory. In Java there is no meaning to memory ownership: when an object has reference(s) to it, it is kept alive.
+A key requirement is putting leaking libraries into quarantine. The challenge is telling when library is leaking memory. In Java there is no meaning to memory ownership: when an object has reference(s) to it, it is kept alive, when all references are gone the object will be scheduled for garbage collection. 
+The issue now is how to define library memory consumption: the library may hold references to memory that it did not allocate, or conversely allocate memory then return it to the caller and get rid of the reference. Which is considered as library memory?
 
 == Memory Model ==
 Here we deal with objects referenced by the library. First a list of possible allocation/access models:
