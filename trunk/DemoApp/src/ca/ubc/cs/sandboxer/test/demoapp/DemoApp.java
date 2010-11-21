@@ -28,6 +28,8 @@ public class DemoApp {
                 runningTimeMsecs = System.currentTimeMillis() - startTimeMillis;
             } while (runningTimeMsecs < START_PHASE_MSECS);
             
+            allocateLotsOfLoggers();
+            
             try {
                 log.longRunningCall();
             } catch (QuarantineException e) {
@@ -40,6 +42,16 @@ public class DemoApp {
             }
         } catch (Exception e) {
             System.out.println("DemoApp caught exception: " + e);
+        }
+    }
+    
+    private static void allocateLotsOfLoggers() {
+        for (long i = 1; i <= 10000000000L; i++) {
+            Logger l = new Logger();
+            
+            if (i % 100000 == 0) {
+                System.out.println("Actual allocation count = " + i);
+            }
         }
     }
 
