@@ -11,6 +11,7 @@
 === Common Leaks ===
  * Collection classes
  * Static classes
+ * "Event handlers"
 
 == BCI (Byte Code Instrumentation) ==
  * Manual (non ASM): http://weblogs.java.net/blog/kellyohair/archive/2005/05/bytecode_instru.html
