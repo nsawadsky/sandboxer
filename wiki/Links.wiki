@@ -23,9 +23,12 @@
 = Papers =
 
 == Interesting ==
- * Visualizing Reference Patterns for Solving Memory Leaks in Java: http://www.springerlink.com/content/cfvp0ccf6j9dtnf6/, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.15.2953&rep=rep1&type=pdf
- * Precise memory leak detection for java software using container profiling: http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=4814126, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.116.8020&rep=rep1&type=pdf
  * Object ownership profiling: a technique for finding and fixing memory leaks: http://portal.acm.org/citation.cfm?id=1321631.1321661, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.4145&rep=rep1&type=pdf
+ * Precise memory leak detection for java software using container profiling: http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=4814126, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.116.8020&rep=rep1&type=pdf
+   * done by tracking operations on containers
+ * Visualizing Reference Patterns for Solving Memory Leaks in Java: http://www.springerlink.com/content/cfvp0ccf6j9dtnf6/, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.15.2953&rep=rep1&type=pdf
+   * Programmer identified periods of time for temporary objects
+   * Snapshots
 
 == Somewhat related ==
  * Automatic Removal of Array Memory Leaks in Java: http://www.springerlink.com/content/4nq7ydp9y8rkrqh5/
