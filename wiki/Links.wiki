@@ -28,6 +28,6 @@
  * Object ownership profiling: a technique for finding and fixing memory leaks: http://portal.acm.org/citation.cfm?id=1321631.1321661
 
 == Somewhat related ==
- * Automatic Removal of Array Memory Leaks in Java: hhttp://www.springerlink.com/content/4nq7ydp9y8rkrqh5/
+ * Automatic Removal of Array Memory Leaks in Java: http://www.springerlink.com/content/4nq7ydp9y8rkrqh5/
  * LeakBot: An Automated and Lightweight Tool for Diagnosing Memory Leaks in Large Java Applications: http://www.springerlink.com/content/3aubgw98fla82dyb/
  * Cork: Dynamic memory leak detection for garbage collected languages: http://portal.acm.org/citation.cfm?id=1190215.1190224
