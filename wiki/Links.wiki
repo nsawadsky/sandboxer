@@ -1,0 +1,16 @@
+= Online Articles =
+
+== Memory Leaks ==
+ * Troubleshooting memory leaks: http://www.oracle.com/technetwork/java/javase/memleaks-137499.html
+ * How to fix memory leaks in Java: http://olex.openlogic.com/wazi/2009/how-to-fix-memory-leaks-in-java/
+ * References:
+   * Weak: http://www.ibm.com/developerworks/java/library/j-jtp11225/index.html
+   * Soft: http://www.ibm.com/developerworks/java/library/j-jtp01246.html
+
+== BCI (Byte Code Instrumentation) ==
+ * Manual (non ASM): http://weblogs.java.net/blog/kellyohair/archive/2005/05/bytecode_instru.html
+
+== JVMTI ==
+ * Latest JVMTI reference: http://download.oracle.com/javase/6/docs/platform/jvmti/jvmti.html
+ * Source code examples: http://localdoc.scusa.lsu.edu/java/5-jdk/demo/jvmti/
+ * Using Agents (code examples): http://blogs.sun.com/kto/entry/using_vm_agents
