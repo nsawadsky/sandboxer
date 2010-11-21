@@ -2,10 +2,14 @@ package ca.ubc.cs.sandboxer.core;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.lang.ref.WeakReference;
 
 /**
  * A RuntimeSandbox is the runtime object associated with
@@ -110,6 +114,15 @@ public class RuntimeSandbox {
     private List<FieldInfo> staticFields = new CopyOnWriteArrayList<FieldInfo>();
     
     /**
+     * Queue of references to allocated instances of classes within the sandbox.
+     * This may contain multiple references to the same object, since a reference is
+     * added for each call to a sandboxed constructor (and multiple such calls may occur
+     * for a single object, if its inheritance tree includes multiple classes within 
+     * the sandbox).
+     */
+    private ConcurrentLinkedQueue<WeakReference<Object>> references = new ConcurrentLinkedQueue<WeakReference<Object>>();
+    
+    /**
      * Create a runtime sandbox from the specified policy.
      */
     public RuntimeSandbox(SandboxPolicy policy) {
@@ -124,10 +137,10 @@ public class RuntimeSandbox {
     }
     
     /**
-     * Handler called when a thread enters a method of this sandbox.
+     * Handler called when a thread enters a method or constructor of this sandbox.
      */
     public void enterMethod(Class<?> cls, String methodName) {
-        System.out.println("Entering " + cls.getSimpleName() + "." + methodName);
+        //System.out.println("Entering " + cls.getSimpleName() + "." + methodName);
         if (isQuarantined) {
             throw new QuarantineException(
                     "Sandbox " + policy.getSandboxName() + " is quarantined, quarantine reason: " + quarantineReason);
@@ -142,10 +155,10 @@ public class RuntimeSandbox {
     }
     
     /**
-     * Handler called when a thread leaves a method of this sandbox.
+     * Handler called when a thread leaves a method or constructor of this sandbox.
      */
     public void leaveMethod(Class<?> cls, String methodName) {
-        System.out.println("Leaving " + cls.getSimpleName() + "." + methodName);
+        //System.out.println("Leaving " + cls.getSimpleName() + "." + methodName);
         Thread currThread = Thread.currentThread();
         ActiveThreadInfo info = activeThreads.get(currThread);
         if (info != null) {
@@ -153,6 +166,14 @@ public class RuntimeSandbox {
                 activeThreads.remove(currThread);    
             }
         }
+    }
+    
+    /**
+     * Handler called when a constructor of a class within the sandbox is exited.
+     */
+    public void leaveConstructor(Class<?> cls, Object newObject) {
+        //System.out.println("Leaving constructor of " + cls.getSimpleName());
+        references.add(new WeakReference<Object>(newObject));
     }
     
     /**
@@ -169,6 +190,26 @@ public class RuntimeSandbox {
      */
     public SandboxPolicy getPolicy() {
         return policy;
+    }
+    
+    /**
+     * Refresh queue of allocated objects, returning set of those objects
+     * which have not yet been freed.
+     */
+    public synchronized Set<Object> refreshAllocatedObjects() {
+        IdentityHashMap<Object, Object> allocatedObjects = new IdentityHashMap<Object, Object>();
+        WeakReference<Object> marker = new WeakReference<Object>(this);
+        references.add(marker);
+        WeakReference<Object> ref = references.remove();
+        while (ref != marker) {
+            Object obj = ref.get();
+            if (obj != null) {
+                references.add(ref);
+                allocatedObjects.put(obj, obj);
+            }
+            ref = references.remove();
+        };
+        return allocatedObjects.keySet();
     }
     
     /**

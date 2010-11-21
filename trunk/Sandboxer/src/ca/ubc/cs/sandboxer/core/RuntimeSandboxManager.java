@@ -55,6 +55,16 @@ public class RuntimeSandboxManager {
     }
     
     /**
+     * Handler called when a constructor of a class within a sandbox is exited.
+     */
+    public void leaveConstructor(int sandboxId, Class<?> cls, Object newObject) {
+        RuntimeSandbox sandbox = sandboxes.get(sandboxId);
+        if (sandbox != null) {
+            sandbox.leaveConstructor(cls, newObject);
+        }
+    }
+    
+    /**
      * Event handler invoked when a new static field is discovered in a class being
      * loaded into the sandbox.
      */
