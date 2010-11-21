@@ -1,5 +1,7 @@
 package ca.ubc.cs.sandboxer.core;
 
+import java.util.Set;
+
 /**
  * Class enforces sandbox policies by monitoring an instance of 
  * runtime sandbox.
@@ -7,25 +9,31 @@ package ca.ubc.cs.sandboxer.core;
 public class SandboxMonitor extends Thread {
     private SandboxPolicy policy;
     private RuntimeSandbox sandbox;
+    private long pollIterations = 0;
     
+    private final static int POLL_PERIOD_SECONDS = 2;
+    private final static int HEAP_POLL_PERIOD_SECONDS = 10;
+    private final static int HEAP_POLL_PERIOD_CYCLES = HEAP_POLL_PERIOD_SECONDS / POLL_PERIOD_SECONDS;
+
     public SandboxMonitor(SandboxPolicy policy, RuntimeSandbox sandbox) {
         this.policy = policy;
         this.sandbox = sandbox;
         
         setName("SandboxMonitor(" + policy.getSandboxName() + ")");
         setDaemon(true);
-        setPriority(NORM_PRIORITY - 1);
+        //setPriority(NORM_PRIORITY - 1);
     }
     
     public void run() {
         try {
-            final int POLL_PERIOD_SECONDS = 2;
             
             while (true) {
                 try {
                     Thread.sleep(1000 * POLL_PERIOD_SECONDS);
                 } catch (InterruptedException e) {}
                 
+                pollIterations++;
+
                 long currentTimeMsecs = System.currentTimeMillis();
                 for (RuntimeSandbox.ActiveThreadView threadView: sandbox.getActiveThreads()) {
                     if ((currentTimeMsecs - threadView.getEntryTimeMsecs()) > 
@@ -41,6 +49,12 @@ public class SandboxMonitor extends Thread {
                                 new QuarantineException(
                                         "Sandbox " + policy.getSandboxName() + " quarantined due to " + quarantineReason));
                     }
+                }
+
+                if (pollIterations % HEAP_POLL_PERIOD_CYCLES == 0) {
+                    System.out.println("*** Counting allocated objects ...");
+                    Set<Object> allocatedObjects = sandbox.refreshAllocatedObjects();
+                    System.out.println("*** Current count of allocated objects = " + allocatedObjects.size());
                 }
             }
         } catch (Exception e) {

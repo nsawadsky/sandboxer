@@ -6,7 +6,9 @@ import java.util.List;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
+import javassist.CtBehavior;
 import javassist.CtClass;
+import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -18,6 +20,7 @@ import javassist.Translator;
 public class SandboxTranslator implements Translator {
     private List<SandboxPolicy> policies;
     private ClassLoader loader;
+    private final static String SANDBOX_MANAGER = RuntimeSandboxManager.class.getName();
 
     public SandboxTranslator(List<SandboxPolicy> policies, ClassLoader loader) {
         this.policies = policies;
@@ -34,6 +37,7 @@ public class SandboxTranslator implements Translator {
             CtClass ctc = pool.get(className);
             processFields(className, ctc.getDeclaredFields(), matchingPolicies);
             processMethods(className, ctc.getDeclaredMethods(), matchingPolicies);
+            processConstructors(className, ctc.getDeclaredConstructors(), matchingPolicies);
         }
         
     }
@@ -60,8 +64,31 @@ public class SandboxTranslator implements Translator {
         
     }
     
-    private void instrumentMethodForSandbox(CtMethod method, SandboxPolicy policy) throws CannotCompileException {
-        final String SANDBOX_MANAGER = RuntimeSandboxManager.class.getName();
+    private void processConstructors(String className, CtConstructor[] constructors, List<SandboxPolicy> policies) 
+                throws CannotCompileException {
+        for (CtConstructor ctor: constructors) {
+            // Make sure we *can* instrument the constructor (e.g. constructor is not native).
+            if (ctor.getMethodInfo().getCodeAttribute() != null) {
+                for (SandboxPolicy policy: policies) {
+                    if (Modifier.isPublic(ctor.getModifiers()) || Modifier.isProtected(ctor.getModifiers())) {
+                        instrumentMethodForSandbox(ctor, policy);
+                    }
+                    instrumentConstructorForSandbox(ctor, policy);
+                }
+            }
+        }
+    }
+    
+    private void instrumentConstructorForSandbox(CtConstructor ctor, SandboxPolicy policy) throws CannotCompileException {
+        String afterCode =
+            "{" + 
+                SANDBOX_MANAGER + ".getDefault().leaveConstructor(" + policy.getId() + ", $class, $0);" +
+            "}";
+        // Only executed if the constructor returns successfully (without throwing an exception).
+        ctor.insertAfter(afterCode);
+    }
+    
+    private void instrumentMethodForSandbox(CtBehavior method, SandboxPolicy policy) throws CannotCompileException {
         String beforeCode = 
             "{" +
                 SANDBOX_MANAGER + ".getDefault().enterMethod(" + policy.getId() + ", $class, \"" + method.getName() + "\");" + 
