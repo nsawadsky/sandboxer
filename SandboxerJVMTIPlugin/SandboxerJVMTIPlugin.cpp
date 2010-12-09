@@ -13,15 +13,6 @@
 
 static int GBL_agentLoaded = 0;
 
-/*
- * Initialization function.
- */
-JNIEXPORT jint JNICALL
-Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
-    GBL_agentLoaded = 1;
-    return 0;
-}
-
 JNIEXPORT void JNICALL
 Java_ca_ubc_cs_sandboxer_core_SandboxAppLoader_printMessage(JNIEnv *env, jclass cls, jstring javaMsg) {
     const char* msg = env->GetStringUTFChars(javaMsg, NULL);
