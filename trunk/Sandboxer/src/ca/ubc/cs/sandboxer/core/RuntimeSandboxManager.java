@@ -37,30 +37,30 @@ public class RuntimeSandboxManager {
     /**
      * Event handler invoked when a sandboxed method is entered.
      */
-    public void enterMethod(int sandboxId, Class<?> cls, String methodName) {
+    public void enterMethod(int sandboxId, String className, String methodName) {
         RuntimeSandbox sandbox = sandboxes.get(sandboxId);
         if (sandbox != null) {
-            sandbox.enterMethod(cls, methodName);
+            sandbox.enterMethod(className, methodName);
         }
     }
     
     /**
      * Event handler invoked when a sandboxed method is exited.
      */
-    public void leaveMethod(int sandboxId, Class<?> cls, String methodName) {
+    public void leaveMethod(int sandboxId, String className, String methodName) {
         RuntimeSandbox sandbox = sandboxes.get(sandboxId);
         if (sandbox != null) {
-            sandbox.leaveMethod(cls, methodName);
+            sandbox.leaveMethod(className, methodName);
         }
     }
     
     /**
      * Handler called when a constructor of a class within a sandbox is exited.
      */
-    public void leaveConstructor(int sandboxId, Class<?> cls, Object newObject) {
+    public void leaveConstructor(int sandboxId, String className, Object newObject) {
         RuntimeSandbox sandbox = sandboxes.get(sandboxId);
         if (sandbox != null) {
-            sandbox.leaveConstructor(cls, newObject);
+            sandbox.leaveConstructor(className, newObject);
         }
     }
     

@@ -57,7 +57,7 @@ public class SandboxTranslator implements Translator {
                     method.getMethodInfo().getCodeAttribute() != null) {
 
                 for (SandboxPolicy policy: policies) {
-                    instrumentMethodForSandbox(method, policy);
+                    instrumentMethodForSandbox(className, method, policy);
                 }
             }
         }
@@ -71,31 +71,31 @@ public class SandboxTranslator implements Translator {
             if (ctor.getMethodInfo().getCodeAttribute() != null) {
                 for (SandboxPolicy policy: policies) {
                     if (Modifier.isPublic(ctor.getModifiers()) || Modifier.isProtected(ctor.getModifiers())) {
-                        instrumentMethodForSandbox(ctor, policy);
+                        instrumentMethodForSandbox(className, ctor, policy);
                     }
-                    instrumentConstructorForSandbox(ctor, policy);
+                    instrumentConstructorForSandbox(className, ctor, policy);
                 }
             }
         }
     }
     
-    private void instrumentConstructorForSandbox(CtConstructor ctor, SandboxPolicy policy) throws CannotCompileException {
+    private void instrumentConstructorForSandbox(String className, CtConstructor ctor, SandboxPolicy policy) throws CannotCompileException {
         String afterCode =
             "{" + 
-                SANDBOX_MANAGER + ".getDefault().leaveConstructor(" + policy.getId() + ", $class, $0);" +
+                SANDBOX_MANAGER + ".getDefault().leaveConstructor(" + policy.getId() + ", \"" + className + "\", $0);" +
             "}";
         // Only executed if the constructor returns successfully (without throwing an exception).
         ctor.insertAfter(afterCode);
     }
     
-    private void instrumentMethodForSandbox(CtBehavior method, SandboxPolicy policy) throws CannotCompileException {
+    private void instrumentMethodForSandbox(String className, CtBehavior method, SandboxPolicy policy) throws CannotCompileException {
         String beforeCode = 
             "{" +
-                SANDBOX_MANAGER + ".getDefault().enterMethod(" + policy.getId() + ", $class, \"" + method.getName() + "\");" + 
+                SANDBOX_MANAGER + ".getDefault().enterMethod(" + policy.getId() + ", \"" + className + "\", \"" + method.getName() + "\");" + 
             "}";
         String afterCode = 
             "{" +
-                SANDBOX_MANAGER + ".getDefault().leaveMethod(" + policy.getId() + ", $class, \"" + method.getName() + "\");" + 
+                SANDBOX_MANAGER + ".getDefault().leaveMethod(" + policy.getId() + ", \"" + className + "\", \"" + method.getName() + "\");" + 
             "}";
         method.insertBefore(beforeCode);
         method.insertAfter(afterCode, true);
