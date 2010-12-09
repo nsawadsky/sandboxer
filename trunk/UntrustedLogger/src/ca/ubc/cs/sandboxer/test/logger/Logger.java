@@ -1,7 +1,11 @@
 package ca.ubc.cs.sandboxer.test.logger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Logger extends BaseLogger {
     private static Logger instance = new Logger();
+    private Map<String, String> messageMap = new HashMap<String, String>();
     
     public static Logger getInstance() {
         return instance;
@@ -23,7 +27,8 @@ public class Logger extends BaseLogger {
     }
     
     protected void internalLog(String msg) {
-        System.out.println("Logger.log(" + msg + ")");
+        //System.out.println("Logger.log(" + msg + ")");
+    	messageMap.put(msg, msg);
     }
     
     protected void internalLongRunningCall() {
