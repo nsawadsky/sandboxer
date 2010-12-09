@@ -46,10 +46,15 @@ public class DemoApp {
     }
     
     private static void allocateLotsOfLoggers() {
+        long lastTimestampMsecs = System.currentTimeMillis();
         for (long i = 1; i <= 10000000000L; i++) {
             Logger l = new Logger();
             
             if (i % 100000 == 0) {
+                long newTimestampMsecs = System.currentTimeMillis();
+                System.out.println("Time to allocate 100000 objects = " + 
+                        (newTimestampMsecs - lastTimestampMsecs) + " msecs");
+                lastTimestampMsecs = newTimestampMsecs;
                 System.out.println("Actual allocation count = " + i);
             }
         }
