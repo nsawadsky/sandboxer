@@ -55,6 +55,11 @@ public class SandboxMonitor extends Thread {
                     System.out.println("*** Counting allocated objects ...");
                     Set<Object> allocatedObjects = sandbox.refreshAllocatedObjects();
                     System.out.println("*** Current count of allocated objects = " + allocatedObjects.size());
+                    long startTimeMsecs = System.currentTimeMillis();
+                    long heapUsage = SandboxGuardian.getReferencedSize(allocatedObjects.toArray());
+                    long endTimeMsecs = System.currentTimeMillis();
+                    System.out.println("Total heap usage = " + heapUsage + " bytes");
+                    System.out.println("Calculated heap usage in " + (endTimeMsecs - startTimeMsecs) + " msecs");
                 }
             }
         } catch (Exception e) {
