@@ -28,6 +28,10 @@ public class DemoApp {
                 runningTimeMsecs = System.currentTimeMillis() - startTimeMillis;
             } while (runningTimeMsecs < START_PHASE_MSECS);
             
+            logLotsOfMessages(log, 100000);
+            
+            Thread.currentThread().sleep(600000);
+            
             allocateLotsOfLoggers();
             
             try {
@@ -45,6 +49,12 @@ public class DemoApp {
         }
     }
     
+    private static void logLotsOfMessages(Logger log, long numberOfMessages) {
+    	for (long l = 0; l < numberOfMessages; l++) {
+    		log.log("0123456789-0123456789-01234567890-1234567890-123456789 Message #" + l++);
+    	}
+    }
+    
     private static void allocateLotsOfLoggers() {
         long lastTimestampMsecs = System.currentTimeMillis();
         for (long i = 1; i <= 10000000000L; i++) {
@@ -56,6 +66,9 @@ public class DemoApp {
                         (newTimestampMsecs - lastTimestampMsecs) + " msecs");
                 lastTimestampMsecs = newTimestampMsecs;
                 System.out.println("Actual allocation count = " + i);
+                try {
+                	Thread.currentThread().sleep(100);
+                } catch (InterruptedException e) {}
             }
         }
     }
