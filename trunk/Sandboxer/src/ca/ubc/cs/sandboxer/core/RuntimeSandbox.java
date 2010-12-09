@@ -202,6 +202,7 @@ public class RuntimeSandbox {
         references.add(marker);
         WeakReference<Object> ref = references.remove();
         int objectsRemoved = 0;
+        long startTimeMsecs = System.currentTimeMillis();
         while (ref != marker) {
             Object obj = ref.get();
             if (obj == null) {
@@ -212,7 +213,8 @@ public class RuntimeSandbox {
             }
             ref = references.remove();
         };
-        System.out.println("Removed " + objectsRemoved + " objects");
+        long endTimeMsecs = System.currentTimeMillis();
+        System.out.println("Removed " + objectsRemoved + " objects in " + (endTimeMsecs - startTimeMsecs) + " msecs");
         return allocatedObjects.keySet();
     }
     
