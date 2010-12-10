@@ -1,5 +1,7 @@
 package ca.ubc.cs.sandboxer.test.demoapp;
 
+import java.util.Random;
+
 import ca.ubc.cs.sandboxer.core.QuarantineException;
 import ca.ubc.cs.sandboxer.test.logger.Logger;
 
@@ -15,6 +17,19 @@ public class DemoApp {
             log.baseLog("Starting demo app");
             log.toString();
             
+            Random r = new Random();
+            System.out.println("Calculating square roots ...");
+            
+            long startTimeUsecs = System.nanoTime() / 1000;
+
+            for (int i = 0; i < 10000; i++) {
+            	double result = Math.sqrt(r.nextDouble());
+            }
+            
+            long endTimeUsecs = System.nanoTime() / 1000;
+            
+            System.out.println("Time to calculate 100000 square roots = " + (endTimeUsecs - startTimeUsecs) + " microsecs");
+            
             long startTimeMillis = System.currentTimeMillis();
             
             long START_PHASE_MSECS = 7000;
@@ -29,7 +44,7 @@ public class DemoApp {
             } while (runningTimeMsecs < START_PHASE_MSECS);
             
             logLotsOfMessages(log, 100000);
-            
+
             Thread.currentThread().sleep(600000);
             
             allocateLotsOfLoggers();
