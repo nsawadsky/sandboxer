@@ -140,7 +140,6 @@ public class RuntimeSandbox {
      * Handler called when a thread enters a method or constructor of this sandbox.
      */
     public void enterMethod(String className, String methodName) {
-        //System.out.println("Entering " + cls.getSimpleName() + "." + methodName);
         if (isQuarantined) {
             throw new QuarantineException(
                     "Sandbox " + policy.getSandboxName() + " is quarantined, quarantine reason: " + quarantineReason);
@@ -158,7 +157,6 @@ public class RuntimeSandbox {
      * Handler called when a thread leaves a method or constructor of this sandbox.
      */
     public void leaveMethod(String className, String methodName) {
-        //System.out.println("Leaving " + cls.getSimpleName() + "." + methodName);
         Thread currThread = Thread.currentThread();
         ActiveThreadInfo info = activeThreads.get(currThread);
         if (info != null) {
@@ -172,7 +170,6 @@ public class RuntimeSandbox {
      * Handler called when a constructor of a class within the sandbox is exited.
      */
     public void leaveConstructor(String className, Object newObject) {
-        //System.out.println("Leaving constructor of " + cls.getSimpleName());
         references.add(new WeakReference<Object>(newObject));
     }
     
@@ -181,7 +178,6 @@ public class RuntimeSandbox {
      * loaded in to the sandbox.
      */
     public void addStaticField(FieldInfo info) {
-        System.out.println("Adding static field " + info.getClassName() + "." + info.getFieldName());
         staticFields.add(info);
     }
     
@@ -214,7 +210,7 @@ public class RuntimeSandbox {
             ref = references.remove();
         };
         long endTimeMsecs = System.currentTimeMillis();
-        System.out.println("Removed " + objectsRemoved + " objects in " + (endTimeMsecs - startTimeMsecs) + " msecs");
+        //System.out.println("Removed " + objectsRemoved + " objects in " + (endTimeMsecs - startTimeMsecs) + " msecs");
         return allocatedObjects.keySet();
     }
     

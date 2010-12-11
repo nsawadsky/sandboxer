@@ -12,7 +12,7 @@ public class SandboxMonitor extends Thread {
     private long pollIterations = 0;
     
     private final static int POLL_PERIOD_SECONDS = 2;
-    private final static int HEAP_POLL_PERIOD_SECONDS = 10;
+    private final static int HEAP_POLL_PERIOD_SECONDS = 16;
     private final static int HEAP_POLL_PERIOD_CYCLES = HEAP_POLL_PERIOD_SECONDS / POLL_PERIOD_SECONDS;
 
     public SandboxMonitor(SandboxPolicy policy, RuntimeSandbox sandbox) {
@@ -52,14 +52,15 @@ public class SandboxMonitor extends Thread {
                 }
 
                 if (pollIterations % HEAP_POLL_PERIOD_CYCLES == 0) {
-                    System.out.println("*** Counting allocated objects ...");
+                    System.out.println("*** Sandbox Monitor Statistics ***");
                     Set<Object> allocatedObjects = sandbox.refreshAllocatedObjects();
-                    System.out.println("*** Current count of allocated objects = " + allocatedObjects.size());
+                    // System.out.println("Current count of allocated objects = " + allocatedObjects.size());
                     long startTimeMsecs = System.currentTimeMillis();
                     long heapUsage = SandboxGuardian.getReferencedSize(allocatedObjects.toArray());
                     long endTimeMsecs = System.currentTimeMillis();
                     System.out.println("Total heap usage = " + heapUsage + " bytes");
                     System.out.println("Calculated heap usage in " + (endTimeMsecs - startTimeMsecs) + " msecs");
+                    System.out.println();
                 }
             }
         } catch (Exception e) {
