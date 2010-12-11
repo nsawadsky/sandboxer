@@ -12,7 +12,7 @@ public class PerformanceTracker implements Runnable {
 	private List<TaskCounters> workerCounterList = new ArrayList<TaskCounters>();
 	
 	// Interval over which statistics are calculated
-	private final static int PERF_TRACKER_INTERVAL_SECS = 16;
+	private final static int PERF_TRACKER_INTERVAL_SECS = 10;
 	
 	@Override
 	public void run() {

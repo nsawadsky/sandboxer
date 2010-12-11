@@ -17,7 +17,7 @@ public class DemoClient {
 	public static void main(String[] args) {
 	    try {
             System.out.println("Starting DemoClient");
-	        Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 1);
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 1);
 	        
     		Registry registry = LocateRegistry.getRegistry(null);
             DemoService service = (DemoService)registry.lookup(DemoServer.SERVICE_NAME);
@@ -27,7 +27,8 @@ public class DemoClient {
     		ExecutorService threadPool = Executors.newCachedThreadPool();
 
     		PerformanceTracker tracker = new PerformanceTracker();
-    		threadPool.submit(tracker);
+    		Thread trackerThread = new Thread(tracker);
+    		trackerThread.start();
     		
     		while (true) {
     		    ClientTask clientTask = new ClientTask(service, tracker);
