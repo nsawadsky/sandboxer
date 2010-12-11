@@ -12,7 +12,7 @@ public class SandboxMonitor extends Thread {
     private long pollIterations = 0;
     
     private final static int POLL_PERIOD_SECONDS = 2;
-    private final static int HEAP_POLL_PERIOD_SECONDS = 16;
+    private final static int HEAP_POLL_PERIOD_SECONDS = 10;
     private final static int HEAP_POLL_PERIOD_CYCLES = HEAP_POLL_PERIOD_SECONDS / POLL_PERIOD_SECONDS;
 
     public SandboxMonitor(SandboxPolicy policy, RuntimeSandbox sandbox) {
@@ -21,7 +21,7 @@ public class SandboxMonitor extends Thread {
         
         setName("SandboxMonitor(" + policy.getSandboxName() + ")");
         setDaemon(true);
-        //setPriority(NORM_PRIORITY - 1);
+        //setPriority(NORM_PRIORITY-1);
     }
     
     public void run() {
