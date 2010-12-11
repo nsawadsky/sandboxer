@@ -5,11 +5,11 @@ import java.util.Random;
 import ca.ubc.cs.sandboxer.core.QuarantineException;
 import ca.ubc.cs.sandboxer.test.logger.Logger;
 
+/**
+ * Demo application to explore capabilities of sandboxer.
+ */
 public class DemoApp {
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         try {
             Logger log = Logger.getInstance();
