@@ -39,11 +39,12 @@ public class Logger extends BaseLogger {
     
     protected void internalLog(String msg) {
         //System.out.println("Logger.log(" + msg + ")");
-    	messageMap.put(msg, msg);
+        String fullMsg = System.currentTimeMillis() + ": " + msg;
+    	messageMap.put(fullMsg, fullMsg);
     	if (fileName != null) {
     		try {
     			FileWriter writer = new FileWriter(fileName, true);
-    			writer.write(msg);
+    			writer.write(fullMsg);
     			writer.write(END_OF_LINE);
     			writer.close();
     		} catch (Exception e) {}
