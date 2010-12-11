@@ -5,13 +5,13 @@ import java.util.Random;
 import ca.ubc.cs.sandboxer.test.logger.Logger;
 
 /**
- * Worker task for simulating an OLTP-style workload.
+ * Server task for simulating an OLTP-style workload.
  */
-public class WorkerTask implements Runnable {
+public class ServerTask implements Runnable {
 	private Logger logger;
 	private Random random = new Random();
 	
-	public WorkerTask(Logger logger) {
+	public ServerTask(Logger logger) {
 		this.logger = logger;
 	}
 	

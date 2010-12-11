@@ -33,7 +33,7 @@ public class DemoServer implements DemoService {
     
     @Override
     public String doTask(String[] args) {
-        WorkerTask task = new WorkerTask(logger);
+        ServerTask task = new ServerTask(logger);
         task.run();
         return null;
     }
