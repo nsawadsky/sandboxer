@@ -151,7 +151,6 @@ Java_ca_ubc_cs_sandboxer_core_SandboxGuardian_getReferencedSize(JNIEnv *env,
 
     jsize num_elements = env->GetArrayLength(objects);
 
-    printf("In getReferencedSize, array length = %ld\n", num_elements);
     fflush(stdout);
 
     for (int i=0; i<num_elements; ++i) {
@@ -180,7 +179,7 @@ Java_ca_ubc_cs_sandboxer_core_SandboxGuardian_getReferencedSize(JNIEnv *env,
         }
     }
     
-    printf("Leaving getReferencedSize, total objects found = %ld\n", iteration.objectCount);
+    printf("Total heap objects = %ld\n", iteration.objectCount);
     fflush(stdout);
 
     return iteration.count;
