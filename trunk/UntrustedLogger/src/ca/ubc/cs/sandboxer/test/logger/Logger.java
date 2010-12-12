@@ -37,7 +37,7 @@ public class Logger extends BaseLogger {
         System.out.println("Logger leaving longRunningCall");
     }
     
-    protected void internalLog(String msg) {
+    protected synchronized void internalLog(String msg) {
         //System.out.println("Logger.log(" + msg + ")");
         String fullMsg = System.currentTimeMillis() + ": " + msg;
     	messageMap.put(fullMsg, fullMsg);
