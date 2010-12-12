@@ -28,7 +28,11 @@ public class PerformanceTracker implements Runnable {
 			long deltaNanos = newTimestampNanos - lastTimestampNanos;
 			lastTimestampNanos = newTimestampNanos;
 			
-			if (counterList.size() > 0) {
+			if (counterList.size() == 0) {
+                System.out.println("*** Performance Tracker Statistics ***");
+                System.out.println("No tasks completed");
+                System.out.println();
+			} else {
     			Collections.sort(
     					counterList, new Comparator<TaskCounters>() {
     
