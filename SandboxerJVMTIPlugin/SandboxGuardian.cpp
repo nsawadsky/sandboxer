@@ -105,7 +105,7 @@ typedef struct {
 } Iteration;
 
 // TODO: we can actually break down the summation by reference_kind/class etc
-static jvmtiIterationControl JNICALL 
+static jvmtiIterationControl JNICALL
 Iteration_Callback(jvmtiObjectReferenceKind reference_kind, 
                    jlong class_tag, 
                    jlong size, 
@@ -129,6 +129,7 @@ Iteration_Callback(jvmtiObjectReferenceKind reference_kind,
             *tag_ptr = iteration->tag;
         } else { //NULL tag, we do not have the jobject to tag!
             //TODO gTiEnv->SetTag(, iteration->tag);
+        	printf("Null Tag!!! cannot set tag to %ld\n", (long)iteration->tag);
         }
 
         return JVMTI_ITERATION_CONTINUE;
