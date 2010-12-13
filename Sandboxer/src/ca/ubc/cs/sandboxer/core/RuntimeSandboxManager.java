@@ -74,5 +74,23 @@ public class RuntimeSandboxManager {
             sandbox.addStaticField(fieldInfo);
         }
     }
+
+    /**
+     * Returns sandbox for a given sandbox-id
+     */
+    public RuntimeSandbox getSandbox( int sandboxId ) {
+        return sandboxes.get( sandboxId );
+    }
     
+    /**
+     * Given a sandbox (policy) name returns the sandbox or null if none found
+     */
+    public RuntimeSandbox getSandboxFromName( String name ) {
+        for ( Map.Entry<Integer, RuntimeSandbox> it: sandboxes.entrySet() ) {
+            if ( it.getValue().getPolicy().getSandboxName().equals( name ) ) {
+                return it.getValue();
+            }
+        }
+        return null;
+    }
 }
