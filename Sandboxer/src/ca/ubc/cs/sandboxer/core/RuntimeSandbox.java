@@ -229,5 +229,18 @@ public class RuntimeSandbox {
     public List<FieldInfo> getStaticFields() {
         return Collections.unmodifiableList(staticFields);
     }
+
+    /**
+     * Is sandbox in quarantined state?
+     */
+    public boolean isQuarantined() {
+        return this.isQuarantined;
+    }
     
+    /**
+     * The reason for being quarantined or null
+     */
+    public String getQuarantineReason() {
+        return this.quarantineReason;
+    }
 }
