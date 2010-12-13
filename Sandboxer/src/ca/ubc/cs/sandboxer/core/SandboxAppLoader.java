@@ -55,46 +55,50 @@ public class SandboxAppLoader {
     // returns a list of policies from commandline
     // a policy is defined as -policy=name,list:of:prefixes,maxtime,maxheap
     private List<SandboxPolicy> parseCommandlinePolicies( String[] args ) {
-    	int maxtime; 
-    	int maxheap;
-    	List<String> prefixes;
-    	String name;
-    	
-    	List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
-    	for ( String a: args ) {
-    		if ( a.startsWith( "-policy=" ) ) {
-            	maxtime = 0; 
-            	maxheap = 0;
-            	prefixes = new ArrayList<String>();
-            	name = "";
-    			String[] param = a.substring( 8 ).split( "," );
-    			if ( param.length >= 2 ) {
-    				name = param[0];
-    				prefixes = Arrays.asList( param[1].split( ":" ) );
-    				if ( param.length >= 3 ) {
-    					maxtime = Integer.parseInt( param[2] );
-    				}
-    				if ( param.length == 4 ) {
-    					maxheap = Integer.parseInt( param[3] );
-    				}
-    				policies.add( new SandboxPolicy( name, prefixes, maxtime, maxheap, SandboxPolicy.QuarantineBehavior.Exception) );
-    			}
-    		}
-    	}
-    	
-    	return policies;
+        final int NAME = 0;
+        final int PREFIXES = 1;
+        final int TIMEOUT = 2;
+        final int HEAPSIZE = 3;
+
+        List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
+        for ( String a: args ) {
+            if ( a.startsWith( "-policy=" ) ) {
+
+                String[] param = a.substring( 8 ).split( "," );
+                if ( param.length >= PREFIXES+1 ) {
+                    
+                    String name = param[ NAME ];
+                    List<String> prefixes = Arrays.asList( param[ PREFIXES ].split( ":" ) );
+                    int maxtime = 0; 
+                    int maxheap = 0;
+
+                    if ( param.length >= TIMEOUT+1 ) {
+                        maxtime = Integer.parseInt( param[ TIMEOUT ] );
+                    }
+                    if ( param.length == HEAPSIZE+1 ) {
+                        maxheap = Integer.parseInt( param[ HEAPSIZE ] );
+                    }
+                    policies.add( new SandboxPolicy( name, prefixes, maxtime, 
+                            maxheap, SandboxPolicy.QuarantineBehavior.Exception) );
+                }
+            }
+        }
+
+        return policies;
     }
+
     /**
      * Retrieves hard-coded sandboxing policies.  Eventually, policies should
      * be config-driven.  
      */
-    private List<SandboxPolicy> getPolicies() {
+/*    private List<SandboxPolicy> getPolicies() {
         SandboxPolicy untrustedLoggerPolicy = new SandboxPolicy(
                 "UntrustedLoggerSandbox",
                 Arrays.asList("ca.ubc.cs.sandboxer.test.logger."),
                 3000, 100, SandboxPolicy.QuarantineBehavior.Exception);
         return Arrays.asList(untrustedLoggerPolicy);    
     }
+*/
     
     /**
      * Test function for JNI interface to JVM TI plugin.
