@@ -63,8 +63,8 @@ public class SandboxAppLoader {
     	List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
     	for ( String a: args ) {
     		if ( a.startsWith( "-policy=" ) ) {
-            	maxtime = 3000; 
-            	maxheap = 10;
+            	maxtime = 0; 
+            	maxheap = 0;
             	prefixes = new ArrayList<String>();
             	name = "";
     			String[] param = a.substring( 8 ).split( "," );

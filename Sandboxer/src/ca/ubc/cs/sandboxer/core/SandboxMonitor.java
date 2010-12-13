@@ -37,7 +37,7 @@ public class SandboxMonitor extends Thread {
                 long currentTimeMsecs = System.currentTimeMillis();
                 for (RuntimeSandbox.ActiveThreadView threadView: sandbox.getActiveThreads()) {
                     if ((currentTimeMsecs - threadView.getEntryTimeMsecs()) > 
-                            policy.getCallTimeoutMsecs()) {
+                            policy.getCallTimeoutMsecs() && policy.getCallTimeoutMsecs() > 0) {
                         
                         // Quarantine the sandbox.
                         String quarantineReason = "long-running call to " +
@@ -63,7 +63,7 @@ public class SandboxMonitor extends Thread {
                     System.out.println();
                     
                     long heapUsageMegs = heapUsage / (1024L*1024L);
-                    if ( heapUsageMegs >= policy.getMaxHeapMegabytes() ) {
+                    if ( heapUsageMegs >= policy.getMaxHeapMegabytes() && policy.getMaxHeapMegabytes() > 0 ) {
                         // Quarantine the sandbox.
                         String quarantineReason = "Allowed heap quota exhasted. Using " + 
                         	heapUsageMegs + "MB, allowed " + policy.getMaxHeapMegabytes() + "MB";
