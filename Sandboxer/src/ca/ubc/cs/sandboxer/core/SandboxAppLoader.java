@@ -1,5 +1,6 @@
 package ca.ubc.cs.sandboxer.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class SandboxAppLoader {
 
     public void loadAppWithSandbox(String[] args) {
         try {
-            List<SandboxPolicy> policies = getPolicies();
+            List<SandboxPolicy> policies = parseCommandlinePolicies( args ); //getPolicies();
             
             RuntimeSandboxManager.getDefault().activate(policies);
             
@@ -51,6 +52,38 @@ public class SandboxAppLoader {
         }
     }
     
+    // returns a list of policies from commandline
+    // a policy is defined as -policy=name,list:of:prefixes,maxtime,maxheap
+    private List<SandboxPolicy> parseCommandlinePolicies( String[] args ) {
+    	int maxtime; 
+    	int maxheap;
+    	List<String> prefixes;
+    	String name;
+    	
+    	List<SandboxPolicy> policies = new ArrayList<SandboxPolicy>();
+    	for ( String a: args ) {
+    		if ( a.startsWith( "-policy=" ) ) {
+            	maxtime = 3000; 
+            	maxheap = 10;
+            	prefixes = new ArrayList<String>();
+            	name = "";
+    			String[] param = a.substring( 8 ).split( "," );
+    			if ( param.length >= 2 ) {
+    				name = param[0];
+    				prefixes = Arrays.asList( param[1].split( ":" ) );
+    				if ( param.length >= 3 ) {
+    					maxtime = Integer.parseInt( param[2] );
+    				}
+    				if ( param.length == 4 ) {
+    					maxheap = Integer.parseInt( param[3] );
+    				}
+    				policies.add( new SandboxPolicy( name, prefixes, maxtime, maxheap, SandboxPolicy.QuarantineBehavior.Exception) );
+    			}
+    		}
+    	}
+    	
+    	return policies;
+    }
     /**
      * Retrieves hard-coded sandboxing policies.  Eventually, policies should
      * be config-driven.  
