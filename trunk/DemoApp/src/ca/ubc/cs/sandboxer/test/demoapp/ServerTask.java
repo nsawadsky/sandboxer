@@ -2,6 +2,9 @@ package ca.ubc.cs.sandboxer.test.demoapp;
 
 import java.util.Random;
 
+import ca.ubc.cs.sandboxer.core.QuarantineException;
+import ca.ubc.cs.sandboxer.core.RuntimeSandbox;
+import ca.ubc.cs.sandboxer.core.RuntimeSandboxManager;
 import ca.ubc.cs.sandboxer.test.logger.Logger;
 
 /**
@@ -10,24 +13,40 @@ import ca.ubc.cs.sandboxer.test.logger.Logger;
 public class ServerTask implements Runnable {
 	private Logger logger;
 	private Random random = new Random();
+	private RuntimeSandbox sandbox; // the logger sandbox
 	
 	public ServerTask(Logger logger) {
 		this.logger = logger;
+		this.sandbox = RuntimeSandboxManager.getDefault().getSandboxFromName( "UntrustedLoggerSandbox" );
 	}
 	
 	@Override
 	public void run() {
-		logger.log("Starting task");
+		cycle("Starting task");
 		consumeCPU();
-		logger.log("Phase 1 complete");
+		cycle("Phase 1 complete");
 		consumeCPU();
-		logger.log("Phase 2 complete");
+		cycle("Phase 2 complete");
 		consumeCPU();
-		logger.log("Phase 3 complete");
+		cycle("Phase 3 complete");
 		consumeCPU();
-		logger.log("Phase 4 complete");
+		cycle("Phase 4 complete");
 		consumeCPU();
-		logger.log("Task complete");
+		cycle("Task complete");
+	}
+
+	/**
+	 * Calls logger with quarantine protection
+	 */
+	private void cycle( String msg ) {
+	    if ( isQuarantined() == false ) {
+            try {
+                logger.log( msg );
+            } catch ( QuarantineException e ) {
+                System.out.println( "Quarantine exception [Thread " + 
+                        Thread.currentThread().getId() + "]: " + e.getMessage() );
+            }
+        }
 	}
 
 	/**
@@ -37,5 +56,13 @@ public class ServerTask implements Runnable {
         for (int i = 0; i < 15000; i++) {
         	double result = Math.sqrt(random.nextDouble());
         }
+	}
+	
+	/**
+	 * Is instance in quarantined state?
+	 * @return true for quarantined
+	 */
+	public boolean isQuarantined() {
+		return sandbox.isQuarantined();
 	}
 }

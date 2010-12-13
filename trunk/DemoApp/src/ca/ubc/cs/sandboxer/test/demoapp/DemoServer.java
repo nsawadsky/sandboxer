@@ -15,7 +15,6 @@ import ca.ubc.cs.sandboxer.core.SandboxPolicy;
  */
 public class DemoServer implements DemoService {
     private static Logger logger;
-    private static boolean isQuarantined = false;
     
     public static void main(String[] args) {
         DemoServer server = new DemoServer();
@@ -38,15 +37,8 @@ public class DemoServer implements DemoService {
     
     @Override
     public String doTask(String[] args) {
-        if (isQuarantined == false) {
-            ServerTask task = new ServerTask(logger);
-            try {
-                task.run();
-            } catch (QuarantineException e) {
-                System.out.println("Quarantine exception: " + e.getMessage());
-                isQuarantined = true;
-            }
-        }
+        ServerTask task = new ServerTask(logger);
+        task.run();
         return null;
     }
 }
