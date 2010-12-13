@@ -63,7 +63,7 @@ public class SandboxMonitor extends Thread {
                     System.out.println();
                     
                     long heapUsageMegs = heapUsage / (1024L*1024L);
-                    if ( heapUsageMegs > policy.getMaxHeapMegabytes() ) {
+                    if ( heapUsageMegs >= policy.getMaxHeapMegabytes() ) {
                         // Quarantine the sandbox.
                         String quarantineReason = "Allowed heap quota exhasted. Using " + 
                         	heapUsageMegs + "MB, allowed " + policy.getMaxHeapMegabytes() + "MB";
