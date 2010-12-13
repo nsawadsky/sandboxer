@@ -3,8 +3,6 @@ package ca.ubc.cs.sandboxer.test.demoapp;
 import java.util.Random;
 
 import ca.ubc.cs.sandboxer.core.QuarantineException;
-import ca.ubc.cs.sandboxer.core.RuntimeSandbox;
-import ca.ubc.cs.sandboxer.core.RuntimeSandboxManager;
 import ca.ubc.cs.sandboxer.test.logger.Logger;
 
 /**
@@ -13,11 +11,9 @@ import ca.ubc.cs.sandboxer.test.logger.Logger;
 public class ServerTask implements Runnable {
 	private Logger logger;
 	private Random random = new Random();
-	private RuntimeSandbox sandbox; // the logger sandbox
 	
 	public ServerTask(Logger logger) {
 		this.logger = logger;
-		this.sandbox = RuntimeSandboxManager.getDefault().getSandboxFromName( "UntrustedLoggerSandbox" );
 	}
 	
 	@Override
@@ -39,14 +35,10 @@ public class ServerTask implements Runnable {
 	 * Calls logger with quarantine protection
 	 */
 	private void cycle( String msg ) {
-	    if ( isQuarantined() == false ) {
-            try {
-                logger.log( msg );
-            } catch ( QuarantineException e ) {
-                System.out.println( "Quarantine exception [Thread " + 
-                        Thread.currentThread().getId() + ", Sandbox " + 
-                        sandbox.getPolicy().getId() + "]: " + e.getMessage() );
-            }
+        try {
+            logger.log( msg );
+        } catch ( QuarantineException e ) {
+            // exception is silently ignored, fall-back code can be placed here
         }
 	}
 
@@ -57,13 +49,5 @@ public class ServerTask implements Runnable {
         for (int i = 0; i < 15000; i++) {
         	double result = Math.sqrt(random.nextDouble());
         }
-	}
-	
-	/**
-	 * Is instance in quarantined state?
-	 * @return true for quarantined
-	 */
-	public boolean isQuarantined() {
-		return sandbox != null ? sandbox.isQuarantined() : false;
 	}
 }
