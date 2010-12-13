@@ -3,14 +3,19 @@ package ca.ubc.cs.sandboxer.test.demoapp;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
 
 import ca.ubc.cs.sandboxer.test.logger.Logger;
+import ca.ubc.cs.sandboxer.core.QuarantineException;
+import ca.ubc.cs.sandboxer.core.RuntimeSandboxManager;
+import ca.ubc.cs.sandboxer.core.SandboxPolicy;
 
 /**
  * Java RMI server to demonstrate capabilities of sandboxer.
  */
 public class DemoServer implements DemoService {
     private static Logger logger;
+    private static boolean isQuarantined = false;
     
     public static void main(String[] args) {
         DemoServer server = new DemoServer();
@@ -33,9 +38,15 @@ public class DemoServer implements DemoService {
     
     @Override
     public String doTask(String[] args) {
-        ServerTask task = new ServerTask(logger);
-        task.run();
+        if (isQuarantined == false) {
+            ServerTask task = new ServerTask(logger);
+            try {
+                task.run();
+            } catch (QuarantineException e) {
+                System.out.println("Quarantine exception: " + e.getMessage());
+                isQuarantined = true;
+            }
+        }
         return null;
     }
-
 }
