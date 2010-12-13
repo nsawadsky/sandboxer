@@ -61,6 +61,14 @@ public class SandboxMonitor extends Thread {
                     System.out.println("Total heap usage = " + heapUsage + " bytes");
                     System.out.println("Calculated heap usage in " + (endTimeMsecs - startTimeMsecs) + " msecs");
                     System.out.println();
+                    
+                    long heapUsageMegs = heapUsage / (1024L*1024L);
+                    if ( heapUsageMegs > policy.getMaxHeapMegabytes() ) {
+                        // Quarantine the sandbox.
+                        String quarantineReason = "Allowed heap quota exhasted. Using " + 
+                        	heapUsageMegs + "MB, allowed " + policy.getMaxHeapMegabytes() + "MB";
+                        sandbox.setQuarantined( quarantineReason );
+                    }
                 }
             }
         } catch (Exception e) {
