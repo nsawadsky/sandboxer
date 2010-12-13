@@ -44,7 +44,8 @@ public class ServerTask implements Runnable {
                 logger.log( msg );
             } catch ( QuarantineException e ) {
                 System.out.println( "Quarantine exception [Thread " + 
-                        Thread.currentThread().getId() + "]: " + e.getMessage() );
+                        Thread.currentThread().getId() + ", Sandbox " + 
+                        sandbox.getPolicy().getId() + "]: " + e.getMessage() );
             }
         }
 	}
@@ -63,6 +64,6 @@ public class ServerTask implements Runnable {
 	 * @return true for quarantined
 	 */
 	public boolean isQuarantined() {
-		return sandbox.isQuarantined();
+		return sandbox != null ? sandbox.isQuarantined() : false;
 	}
 }
