@@ -34,24 +34,26 @@ public class SandboxMonitor extends Thread {
                 
                 pollIterations++;
 
-                long currentTimeMsecs = System.currentTimeMillis();
-                for (RuntimeSandbox.ActiveThreadView threadView: sandbox.getActiveThreads()) {
-                    if ((currentTimeMsecs - threadView.getEntryTimeMsecs()) > 
-                            policy.getCallTimeoutMsecs() && policy.getCallTimeoutMsecs() > 0) {
-                        
-                        // Quarantine the sandbox.
-                        String quarantineReason = "long-running call to " +
-                                threadView.getClass().getName() + "." + threadView.getEntryMethodName();
-                        sandbox.setQuarantined(quarantineReason);
-                        
-                        // Pop the thread out of the sandbox.
-                        threadView.getActiveThread().stop(
-                                new QuarantineException(
-                                        "Sandbox " + policy.getSandboxName() + " quarantined due to " + quarantineReason));
+                if ( policy.getCallTimeoutMsecs() > 0 ) {
+                    long currentTimeMsecs = System.currentTimeMillis();
+                    for (RuntimeSandbox.ActiveThreadView threadView: sandbox.getActiveThreads()) {
+                        if ((currentTimeMsecs - threadView.getEntryTimeMsecs()) > 
+                                policy.getCallTimeoutMsecs()) {
+                            
+                            // Quarantine the sandbox.
+                            String quarantineReason = "long-running call to " +
+                                    threadView.getClass().getName() + "." + threadView.getEntryMethodName();
+                            sandbox.setQuarantined(quarantineReason);
+                            
+                            // Pop the thread out of the sandbox.
+                            threadView.getActiveThread().stop(
+                                    new QuarantineException(
+                                            "Sandbox " + policy.getSandboxName() + " quarantined due to " + quarantineReason));
+                        }
                     }
                 }
-
-                if (pollIterations % HEAP_POLL_PERIOD_CYCLES == 0) {
+                
+                if (policy.getMaxHeapMegabytes() > 0 && pollIterations % HEAP_POLL_PERIOD_CYCLES == 0) {
                     System.out.println("*** Sandbox Monitor Statistics ***");
                     Set<Object> allocatedObjects = sandbox.refreshAllocatedObjects();
                     // System.out.println("Current count of allocated objects = " + allocatedObjects.size());
@@ -63,7 +65,7 @@ public class SandboxMonitor extends Thread {
                     System.out.println();
                     
                     long heapUsageMegs = heapUsage / (1024L*1024L);
-                    if ( heapUsageMegs >= policy.getMaxHeapMegabytes() && policy.getMaxHeapMegabytes() > 0 ) {
+                    if ( heapUsageMegs >= policy.getMaxHeapMegabytes() ) {
                         // Quarantine the sandbox.
                         String quarantineReason = "Allowed heap quota exhasted. Using " + 
                         	heapUsageMegs + "MB, allowed " + policy.getMaxHeapMegabytes() + "MB";
