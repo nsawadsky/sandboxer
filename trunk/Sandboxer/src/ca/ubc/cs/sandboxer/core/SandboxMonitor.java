@@ -41,7 +41,7 @@ public class SandboxMonitor extends Thread {
                                 policy.getCallTimeoutMsecs()) {
                             
                             // Quarantine the sandbox.
-                            String quarantineReason = "long-running call to " +
+                            String quarantineReason = "Long-running call to " +
                                     threadView.getClass().getName() + "." + threadView.getEntryMethodName();
                             sandbox.setQuarantined(quarantineReason);
                             

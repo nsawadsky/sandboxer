@@ -133,6 +133,9 @@ public class RuntimeSandbox {
         if (!isQuarantined) {
             isQuarantined = true;
             quarantineReason = reason;
+            
+            System.out.println( "Entering quarantine [" + 
+                    policy.getSandboxName() + "]: " + quarantineReason );
         }
     }
     
