@@ -5,7 +5,6 @@
  *      Author: Nick
  */
 
-#include <windows.h>
 #include <jvmti.h>
 #include <stdio.h>
 

@@ -175,6 +175,8 @@ Java_ca_ubc_cs_sandboxer_core_SandboxGuardian_getReferencedSize(JNIEnv *env,
                     break;
                 case JVMTI_ERROR_NULL_POINTER:
                     break;
+                default:
+                    break;
             }
         }
     }
