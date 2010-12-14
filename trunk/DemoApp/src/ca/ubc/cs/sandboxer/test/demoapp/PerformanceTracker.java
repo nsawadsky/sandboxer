@@ -59,7 +59,7 @@ public class PerformanceTracker implements Runnable {
     			
     			double tasksPerSec = counterList.size() / (deltaNanos/1.0E+09);
     			
-    			System.out.println("*** Performance Tracker Statistics ***");
+    			System.out.println("*** Client Performance Tracker ***");
     			System.out.format("Tasks per second: %.3f\n", tasksPerSec);
     			System.out.format("Average latency (msecs): %.3f\n", latencyAverageMsecs);
     			System.out.format("Max latency (msecs): %.3f\n", latencyMaxMsecs);

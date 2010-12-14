@@ -10,10 +10,12 @@ import ca.ubc.cs.sandboxer.test.logger.Logger;
  */
 public class ServerTask implements Runnable {
 	private Logger logger;
+	private boolean longRunningCall;
 	private Random random = new Random();
 	
-	public ServerTask(Logger logger) {
+	public ServerTask(Logger logger, boolean longRunningCall) {
 		this.logger = logger;
+		this.longRunningCall = longRunningCall;
 	}
 	
 	@Override
@@ -36,7 +38,11 @@ public class ServerTask implements Runnable {
 	 */
 	private void cycle( String msg ) {
         try {
-            logger.log( msg );
+        	if (longRunningCall) {
+        		logger.longRunningCall();
+        	} else {
+        		logger.log( msg );
+        	}
         } catch ( QuarantineException e ) {
             // exception is silently ignored, fall-back code can be placed here
         }
