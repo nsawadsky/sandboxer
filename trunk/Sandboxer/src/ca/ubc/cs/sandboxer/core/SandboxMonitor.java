@@ -53,8 +53,8 @@ public class SandboxMonitor extends Thread {
                     }
                 }
                 
-                if (policy.getMaxHeapMegabytes() > 0 && pollIterations % HEAP_POLL_PERIOD_CYCLES == 0) {
-                    System.out.println("*** Sandbox Monitor Statistics ***");
+                if (pollIterations % HEAP_POLL_PERIOD_CYCLES == 0) {
+                    System.out.println("*** Server Sandbox Monitor ***");
                     Set<Object> allocatedObjects = sandbox.refreshAllocatedObjects();
                     // System.out.println("Current count of allocated objects = " + allocatedObjects.size());
                     long startTimeMsecs = System.currentTimeMillis();
@@ -65,7 +65,7 @@ public class SandboxMonitor extends Thread {
                     System.out.println();
                     
                     long heapUsageMegs = heapUsage / (1024L*1024L);
-                    if ( heapUsageMegs >= policy.getMaxHeapMegabytes() ) {
+                    if ( policy.getMaxHeapMegabytes() > 0 && heapUsageMegs >= policy.getMaxHeapMegabytes() ) {
                         // Quarantine the sandbox.
                         String quarantineReason = "Exceeded allowed heap quota of " + 
                         	policy.getMaxHeapMegabytes() + "MB";
