@@ -3,18 +3,15 @@ package ca.ubc.cs.sandboxer.test.demoapp;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Arrays;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 import ca.ubc.cs.sandboxer.test.logger.Logger;
-import ca.ubc.cs.sandboxer.core.QuarantineException;
-import ca.ubc.cs.sandboxer.core.RuntimeSandboxManager;
-import ca.ubc.cs.sandboxer.core.SandboxPolicy;
 
 /**
  * Java RMI server to demonstrate capabilities of sandboxer.
  */
 public class DemoServer implements DemoService {
-    private static Logger logger;
+    private Logger logger = new Logger("DemoDriverLog.txt");
+    private boolean longRunningCall = false;
     
     public static void main(String[] args) {
         DemoServer server = new DemoServer();
@@ -23,10 +20,20 @@ public class DemoServer implements DemoService {
             DemoService service = (DemoService)UnicastRemoteObject.exportObject(server, 0);
             Registry registry = LocateRegistry.getRegistry();
             registry.bind(SERVICE_NAME, service);
-            logger = new Logger("DemoDriverLog.txt");
 
             System.out.println("DemoServer started, hit Enter to exit ...");
-            System.in.read();
+            boolean done = false; 
+            while (!done) {
+            	byte[] buf = new byte[1024];
+            	System.in.read(buf);
+            	String input = new String(buf);
+            	input = input.trim();
+	            if (input.toLowerCase().equals("busy")) {
+	            	server.setLongRunningCall(true);
+	            } else if (input.length() == 0) {
+	            	done = true;
+	            }
+            }
             registry.unbind(SERVICE_NAME);
             System.out.println("DemoServer exiting");
             System.exit(0);
@@ -35,9 +42,13 @@ public class DemoServer implements DemoService {
         }
     }
     
+    public void setLongRunningCall(boolean value) {
+    	longRunningCall = value;
+    }
+    
     @Override
     public String doTask(String[] args) {
-        ServerTask task = new ServerTask(logger);
+        ServerTask task = new ServerTask(logger, longRunningCall);
         task.run();
         return null;
     }

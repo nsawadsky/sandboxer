@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
  */
 public class DemoClient {
 
-	private final static int EXPECTED_ARRIVAL_DELAY_MSECS = 30;
+	private final static int EXPECTED_ARRIVAL_DELAY_MSECS = 15;
 
 	public static void main(String[] args) {
 	    try {
