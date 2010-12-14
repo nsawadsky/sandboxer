@@ -7,8 +7,13 @@
 <listEntry value="1"/>
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="Path" value="${workspace_loc:SandboxerJVMTIPlugin}/OSX-Debug"/>
+<mapEntry key="Path" value="${workspace_loc:SandboxerJVMTIPlugin}/Debug"/>
 </mapAttribute>
+<booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
 <listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry containerPath=&quot;org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6&quot; javaProject=&quot;Sandboxer&quot; path=&quot;1&quot; type=&quot;4&quot;/&gt;&#13;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry id=&quot;org.eclipse.jdt.launching.classpathentry.defaultClasspath&quot;&gt;&#13;&#10;&lt;memento exportedEntriesOnly=&quot;false&quot; project=&quot;Sandboxer&quot;/&gt;&#13;&#10;&lt;/runtimeClasspathEntry&gt;&#13;&#10;"/>
@@ -17,7 +22,7 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="ca.ubc.cs.sandboxer.core.SandboxAppLoader"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="ca.ubc.cs.sandboxer.test.demoapp.DemoServer&#13;&#10;-policy=UntrustedLoggerSandbox,ca.ubc.cs.sandboxer.test.logger,3000,1"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="ca.ubc.cs.sandboxer.test.demoapp.DemoServer&#13;&#10;-policy=UntrustedLoggerSandbox,ca.ubc.cs.sandboxer.test.logger,3000,0"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Sandboxer"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-agentpath:${workspace_loc:SandboxerJVMTIPlugin}/OSX-Debug/libSandboxerJVMTIPlugin.jnilib&#13;&#10;-Djava.rmi.server.codebase=file:${workspace_loc:DemoApp}/bin/&#13;&#10;-Djava.library.path=${workspace_loc:SandboxerJVMTIPlugin}/OSX-Debug"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-agentpath:${workspace_loc:SandboxerJVMTIPlugin}/Debug/SandboxerJVMTIPlugin.dll&#13;&#10;-Djava.rmi.server.codebase=file:${workspace_loc:DemoApp}/bin/ -Dcom.sun.management.jmxremote"/>
 </launchConfiguration>

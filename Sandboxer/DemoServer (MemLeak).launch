@@ -9,6 +9,7 @@
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="Path" value="${workspace_loc:SandboxerJVMTIPlugin}/Debug"/>
 </mapAttribute>
+<booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
@@ -21,7 +22,7 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="ca.ubc.cs.sandboxer.core.SandboxAppLoader"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="ca.ubc.cs.sandboxer.test.demoapp.DemoServer&#13;&#10;-policy=UntrustedLoggerSandbox,ca.ubc.cs.sandboxer.test.logger,3000,1"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="ca.ubc.cs.sandboxer.test.demoapp.DemoServer&#13;&#10;-policy=UntrustedLoggerSandbox,ca.ubc.cs.sandboxer.test.logger,0,5"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Sandboxer"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-agentpath:${workspace_loc:SandboxerJVMTIPlugin}/Debug/SandboxerJVMTIPlugin.dll&#13;&#10;-Djava.rmi.server.codebase=file:${workspace_loc:DemoApp}/bin/"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-agentpath:${workspace_loc:SandboxerJVMTIPlugin}/Debug/SandboxerJVMTIPlugin.dll&#13;&#10;-Djava.rmi.server.codebase=file:${workspace_loc:DemoApp}/bin/ -Dcom.sun.management.jmxremote"/>
 </launchConfiguration>
