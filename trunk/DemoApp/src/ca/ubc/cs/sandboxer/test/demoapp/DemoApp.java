@@ -14,19 +14,29 @@ public class DemoApp {
         try {
             Logger log = Logger.getInstance();
             log.log("Starting demo app");
-            log.baseLog("Starting demo app");
+            
+            long startTimeUsecs = System.nanoTime() / 1000;
+            final long CYCLE_COUNT = 10000000;
+            for (long i = 0; i < CYCLE_COUNT; i++) {
+                log.baseLog("Starting demo app");
+            }
+            long endTimeUsecs = System.nanoTime() / 1000;
+
+            System.out.println("Time per iteration = " + (endTimeUsecs - startTimeUsecs)/(double)CYCLE_COUNT + " microsecs");
+            
+            /*
             log.toString();
             
             Random r = new Random();
             System.out.println("Calculating square roots ...");
             
-            long startTimeUsecs = System.nanoTime() / 1000;
+            startTimeUsecs = System.nanoTime() / 1000;
 
             for (int i = 0; i < 10000; i++) {
             	double result = Math.sqrt(r.nextDouble());
             }
             
-            long endTimeUsecs = System.nanoTime() / 1000;
+            endTimeUsecs = System.nanoTime() / 1000;
             
             System.out.println("Time to calculate 100000 square roots = " + (endTimeUsecs - startTimeUsecs) + " microsecs");
             
@@ -59,6 +69,7 @@ public class DemoApp {
             } catch (QuarantineException e) {
                 System.out.println("DemoApp caught expected exception #2: " + e);
             }
+            */
         } catch (Exception e) {
             System.out.println("DemoApp caught exception: " + e);
         }
